@@ -3,7 +3,7 @@
 # h5ls(path to file) - returns 'workgroup' names
 #cnames <-  c("TrackID","ArtistID","SongTitle","Loudness","Tempo","Mode","ModeConf","Key","KeyConf","Valence","Energy")
 
-dataread <- function(FILEPATH,limit=2,wait=5,api_KEY ="GOGG2HIEDV1GUYHXF"){
+dataread <- function(FILEPATH,limit=2,wait=5,api_KEY){
   # Peforms feature extraction of h5 files, echo nest, and writes the output a csv file.
   #
   # Dependancies:
