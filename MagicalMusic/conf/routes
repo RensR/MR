@@ -4,6 +4,8 @@
 
 # Home page
 GET     /                           controllers.Application.index
+GET     /message                    controllers.MessageController.getMessage
+GET     /assets/javascripts/routes  controllers.MessageController.javascriptRoutes
 
 #About page
 GET		/about  					controllers.Application.about							
