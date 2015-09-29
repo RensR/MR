@@ -11,7 +11,8 @@ libraryDependencies ++= Seq(
   cache,
   ws,
   specs2 % Test,
-  "org.webjars" % "bootstrap" % "2.3.1"
+  "org.webjars" % "bootstrap" % "2.3.1",
+  "mysql" % "mysql-connector-java" % "5.1.21"
 )
 
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
