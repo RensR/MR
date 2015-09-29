@@ -1,8 +1,6 @@
 @(message: String)
 
 @main("Welcome to the Music") {
-    
-
 
     <!-- Header -->
     <a name="about"></a>
@@ -14,7 +12,12 @@
                     <div class="intro-message">
                         <h1>Magical Music</h1>
                         <h3>Everything you ever wanted</h3>
+
                     </div>
+                    <div class="well">
+                        <h1>@message</h1>
+                    </div>
+                    <button id="submitMood">Get JSON Message</button>
                 </div>
             </div>
         </div>
