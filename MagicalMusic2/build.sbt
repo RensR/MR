@@ -25,3 +25,6 @@ play.Project.playScalaSettings
 libraryDependencies += "com.typesafe.slick" %% "slick" % "1.0.1"
 
 libraryDependencies += "com.typesafe.play" %% "play-slick" % "0.5.0.2-SNAPSHOT"
+
+
+fork in run := true

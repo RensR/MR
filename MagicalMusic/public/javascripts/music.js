@@ -5,7 +5,7 @@ $(function() {
         alert("Succes!");
         jsRoutes.controllers.MessageController.getMessage().ajax({
             success: function(data) {
-                $(".well").append($("<h1>").text(data.value));
+                $(".wells").append($("<h1>").text(data.value));
             }
         });
     });

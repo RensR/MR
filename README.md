@@ -2,6 +2,13 @@
 
 You need java 8 for the Play framework
 
+You need MySQL with the following properties
+```
+dbname magicalmusic
+User root
+Pass root
+````
+
 ## How to compile
 Navigate to the folder and use the activator to run the code.
 ```
