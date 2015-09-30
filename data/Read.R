@@ -3,7 +3,7 @@
 # h5ls(path to file) - returns 'workgroup' names
 #cnames <-  c("TrackID","ArtistID","SongTitle","Loudness","Tempo","Mode","ModeConf","Key","KeyConf","Valence","Energy")
 
-dataread <- function(FILEPATH,limit=2,wait=5,api_KEY){
+dataread <- function(FILEPATH,limit=2,wait=2,api_KEY){
   # Peforms feature extraction of h5 files, echo nest, and writes the output a csv file.
   #
   # Dependancies:
@@ -70,12 +70,12 @@ dataread <- function(FILEPATH,limit=2,wait=5,api_KEY){
       counter <- counter+1
       
       # Wait in case limit is close to be filled.
-      remaining_limit <- headers(r)$'x-ratelimit-remaining'
+      remaining_limit <- as.integer(headers(r)$'x-ratelimit-remaining')
       
       if(remaining_limit < limit) {
         
         # Wait for a bit...
-        Sys.sleep(wait*60)
+        Sys.sleep(wait*30)
       } 
       
     } else {
