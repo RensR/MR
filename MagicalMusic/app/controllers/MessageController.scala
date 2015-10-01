@@ -11,7 +11,7 @@ class MessageController extends Controller {
   implicit val fooWrites = Json.writes[Message]
 
   def getMessage = Action {
-    Ok(Json.toJson(Message("Hello from Scala")))
+    Ok(Json.toJson(Message("LgXH44UE5Ho")))
   }
 
   def javascriptRoutes = Action { implicit request =>
