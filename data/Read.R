@@ -3,7 +3,7 @@
 # h5ls(path to file) - returns 'workgroup' names
 #cnames <-  c("TrackID","ArtistID","SongTitle","Loudness","Tempo","Mode","ModeConf","Key","KeyConf","Valence","Energy")
 
-dataread <- function(FILEPATH,limit=2,wait=2,api_KEY){
+dataread <- function(FILEPATH="/Users/evli/Desktop/MillionSongSubset/data",limit=4,wait=3,api_KEY="MTLLSCMIOC98VLRZ4"){
   # Peforms feature extraction of h5 files, echo nest, and writes the output a csv file.
   #
   # Dependancies:
@@ -28,12 +28,12 @@ dataread <- function(FILEPATH,limit=2,wait=2,api_KEY){
   # Parameter for h5read. See h5ls(path to file) for list of group
   group <- "/"
   
-  fileList <- list.files(recursive = TRUE,path = FILEPATH, full.names = TRUE, pattern = "*.h5")[1:100]
+  fileList <- list.files(recursive = TRUE,path = FILEPATH, full.names = TRUE, pattern = "*.h5")[200:400]
   rawdata <- lapply(fileList, function(x) h5read(x,group))
   
   # Progress bar
   total <- length(fileList)
-  pb <- txtProgressBar(min = 0, max = total, style = 3)
+  pb <- txtProgressBar(min = 1, max = total, style = 3)
   
   counter <- 1
   for(s in rawdata){
@@ -43,6 +43,9 @@ dataread <- function(FILEPATH,limit=2,wait=2,api_KEY){
     analysis <- s$analysis$songs
     meta <- s$metadata$songs
     song_id <- meta$song_id
+    
+    track_id <- analysis$track_id
+    
     artist_id <- meta$artist_id
     
     # Proccess EchoNest request
@@ -52,13 +55,13 @@ dataread <- function(FILEPATH,limit=2,wait=2,api_KEY){
     
     # Check is request is not empty
     val <- content(r,"parsed")
-    if(length(val$response$songs) !=0){
+    if(length(val$response$songs) != 0){
       
       valence <- val$response$songs[[1]]$audio_summary$valence
       energy <-val$response$songs[[1]]$audio_summary$energy
       
-      song <- c(meta$song_id, artist_id,meta$title,analysis$loudness,analysis$tempo,analysis$mode,analysis$mode_confidence,analysis$key,analysis$key_confidence,valence,energy)
-      m <- matrix(ncol = 11,nrow = 1)
+      song <- c(track_id,meta$title,analysis$loudness,analysis$tempo,analysis$mode,analysis$mode_confidence,analysis$key,analysis$key_confidence,valence,energy)
+      m <- matrix(ncol = 10,nrow = 1)
       m <- data.frame(m)
       m <- rbind(m,song)
       
@@ -72,15 +75,12 @@ dataread <- function(FILEPATH,limit=2,wait=2,api_KEY){
       # Wait in case limit is close to be filled.
       remaining_limit <- as.integer(headers(r)$'x-ratelimit-remaining')
       
-      if(remaining_limit < limit) {
-        
+      if( (remaining_limit < limit) ) {
         # Wait for a bit...
-        Sys.sleep(wait*30)
+        Sys.sleep(wait*60)
       } 
       
-    } else {
-      ; # Do nothing
-    }
+    }  
   }
   close(pb)
 }
