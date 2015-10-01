@@ -53,3 +53,8 @@ local.properties
 
 # TeXlipse plugin
 .texlipse
+
+# Ignore R files
+.RData
+.Rhistory
+
