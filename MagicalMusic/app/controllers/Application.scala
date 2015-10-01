@@ -1,7 +1,9 @@
 package controllers
 
+import play.api.Play.current
 import play.api._
 import play.api.mvc._
+import play.api.db._
 
 class Application extends Controller {
 
@@ -9,7 +11,16 @@ class Application extends Controller {
     Ok(views.html.index("This is our Magical Music"))
   }
   def about = Action{
-  	Ok(views.html.about("About us"))
-  }
+      var names = List[String]()
+  	  DB.withConnection{ conn =>
+    	val stmt = conn.createStatement
+      	val rs = stmt.executeQuery("SELECT * from test")
+      	while (rs.next()) {
 
+      		names = rs.getString("name") :: names
+    	}	
+	}
+
+  	Ok(views.html.about(names))
+  }
 }

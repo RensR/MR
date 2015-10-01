@@ -2,10 +2,10 @@ $(function() {
     // add a click handler to the button
     $("#submitMood").click(function(event) {
         // make an ajax get request to get the message
-        alert("Succes!");
+       // alert("Succes!");
         jsRoutes.controllers.MessageController.getMessage().ajax({
             success: function(data) {
-                $(".well").append($("<h1>").text(data.value));
+                $(".wells").append($("<h1>").text(data.value));
             }
         });
     });
