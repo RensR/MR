@@ -9,18 +9,14 @@ case class Message(value: String)
 class MessageController extends Controller {
 
   implicit val fooWrites = Json.writes[Message]
-/*
-  def getMessage = Action {
-    Ok(Json.toJson(Message("LgXH44UE5Ho")))
-  }
-*/
 
 //The function to get the song.
 //message = the text the user has typed into the textbox.
   def getSong(message: String) = Action{
-
-  	//return the result
-  	Ok(Json.toJson(message))
+  	//get VA from message
+  	//Match VA with song in database
+  	//return the result (hardcoded youtube song right now)
+  	Ok(Json.toJson((Message("LgXH44UE5Ho"))))
   }
 
   def javascriptRoutes = Action { implicit request =>
