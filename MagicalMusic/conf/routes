@@ -4,7 +4,7 @@
 
 # Home page
 GET     /                           controllers.Application.index
-GET     /message                    controllers.MessageController.getMessage
+GET     /song/:message              controllers.MessageController.getSong(message: String)
 GET     /assets/javascripts/routes  controllers.MessageController.javascriptRoutes
 
 #About page
