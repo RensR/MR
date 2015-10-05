@@ -13,7 +13,7 @@ case class Message(value: String)
 class MessageController extends Controller {
 
   implicit val fooWrites = Json.writes[Message]
-
+  
 //The function to get the song.
 //message = the text the user has typed into the textbox.
   def getSong(message: String) = Action{

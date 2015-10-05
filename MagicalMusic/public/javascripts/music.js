@@ -1,6 +1,17 @@
 $(document).ready(function()
 {
      $('#youtube').hide();
+     $('#inputMoodValue').hide();
+
+    //emoticons:        
+        
+        var $wysiwyg = $('#inputMood').emojiarea({wysiwyg: true});
+        var $wysiwyg_value = $('#inputMoodValue');
+        
+        $wysiwyg.on('change', function() {
+            $wysiwyg_value.text($(this).val());
+        });
+        $wysiwyg.trigger('change');
 });
 
 $(function() {
