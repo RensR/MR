@@ -11,45 +11,25 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-
-//package com.google.api.services.samples.youtube.cmdline.data;
 package helpers;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-//import com.google.api.services.samples.youtube.cmdline.Auth;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
-import com.google.api.services.youtube.model.Thumbnail;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 
-/**
- * Print a list of videos matching a search term.
- *
- * @author Jeremy Walker
- */
 public class Search {
 
     private static final long NUMBER_OF_VIDEOS_RETURNED = 3;
-
-    /**
-     * Define a global instance of a Youtube object, which will be used
-     * to make YouTube Data API requests.
-     */
     private static YouTube youtube;
 
     public String getVideoIDFromQuery(String query)
@@ -78,12 +58,6 @@ public class Search {
             // Restrict the search results to only include videos. See:
             // https://developers.google.com/youtube/v3/docs/search/list#type
             search.setType("video");
-
-            // To increase efficiency, only retrieve the fields that the
-            // application uses. 
-            //This broke everything so I turned it off
-          //  search.setFields("items(id/kind,id/videoId,snippet/title,snippet/thumbnails/default/url)");
-
             search.setMaxResults(NUMBER_OF_VIDEOS_RETURNED);
 
             // Call the API and print results.
@@ -105,10 +79,7 @@ public class Search {
 
     /*
      * Get the video ID
-     *
      * @param iteratorSearchResults Iterator of SearchResults
-     *
-     * @param query Search query (String)
      */
     private static String getID(Iterator<SearchResult> iteratorSearchResults) {
         if (!iteratorSearchResults.hasNext()) {
@@ -117,7 +88,6 @@ public class Search {
         }
 
         while (iteratorSearchResults.hasNext()) {
-
             SearchResult singleVideo = iteratorSearchResults.next();
             ResourceId rId = singleVideo.getId();
 
