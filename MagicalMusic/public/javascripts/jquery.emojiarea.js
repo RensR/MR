@@ -29,7 +29,7 @@
 		icons: {},
 		defaults: {
 			button: null,
-			buttonLabel: 'Aapje',
+			buttonLabel: 'Emoticons',
 			buttonPosition: 'after'
 		}
 	};
@@ -423,7 +423,7 @@
 		offset.left += Math.round($button.outerWidth() / 2);
 		
 		this.$menu.css({
-			top: offset.top,
+			top: offset.top-235,
 			left: offset.left
 		});
 	};
