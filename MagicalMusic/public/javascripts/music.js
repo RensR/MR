@@ -12,6 +12,7 @@ $(function() {
             success: function(data) {
                 //data is the result of the algorithm.
                 //show the song in a YouTube player:
+                console.log(data.value);
                 youtube = document.getElementById('youtube');
                 youtube.src = "http://www.youtube.com/embed/" + data.value + "?autoplay=1";
                 $(youtube).show();

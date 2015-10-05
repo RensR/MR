@@ -6,7 +6,7 @@ import play.api.Routes
 import play.api.Logger
 import java.io.IOException
 
-import helpers.Youtube._
+import helpers.Search._
 
 case class Message(value: String)
 
@@ -20,18 +20,10 @@ class MessageController extends Controller {
     //get VA from message
     //Match VA with song in database
     //return the result (hardcoded youtube song right now)
-
-    var youtube = new helpers.Youtube();
-    var id = ""
-    try{
-        id = youtube.getVideoIdFromQuery(message);
-    }
-    catch{ 
-        case _: Throwable => Logger.debug("Error caught in getVideoIdFromQuery")
-    }
-    finally{
-        Ok(Json.toJson((Message(id))))
-    }
+    //the query will be the artist and song name.
+    var query = message;
+    var youtube = new helpers.Search();
+    var id = youtube.getVideoIDFromQuery(message);
     Ok(Json.toJson((Message(id))))
   }
 
