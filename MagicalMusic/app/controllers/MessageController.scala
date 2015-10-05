@@ -21,6 +21,54 @@ class MessageController extends Controller {
     //Match VA with song in database
     //return the result (hardcoded youtube song right now)
     //the query will be the artist and song name.
+
+    var tokens = message.split(" ");
+
+    var stringList = List[String]();
+    var punctuation = List('.', ',', '!', '?');
+    var stringTemp = "";
+
+    for (token <- tokens){
+      stringTemp = "";
+      var first = true;
+
+      for (charTemp <- token){
+        if (((charTemp >= 'A' && charTemp <= 'Z') || (charTemp >= 'a' && charTemp <= 'z')) || !first){
+          stringTemp += charTemp;
+        }
+        else if(charTemp == '.' || charTemp == ',' || charTemp == '!' || charTemp == '?'){
+          if (stringTemp != ""){
+            stringList = (stringTemp :: stringList);
+            stringTemp = "";
+          }
+          stringTemp += charTemp;
+          stringList = (stringTemp :: stringList);
+          stringTemp = "";
+        }
+        else if(charTemp == '%'){
+          stringTemp += charTemp;
+          first = false;
+        }
+        else
+        {
+          if (stringTemp != ""){
+            stringList = (stringTemp :: stringList);
+            stringTemp = "";
+          }
+          first = false;
+          stringTemp += charTemp;
+        }
+      }    
+      if (stringTemp != ""){
+        stringList = (stringTemp :: stringList);
+      }
+    }
+
+    for (s <- stringList){
+      Logger.debug(s);
+    }
+
+
     var query = message;
     var youtube = new helpers.Search();
     var id = youtube.getVideoIDFromQuery(message);
