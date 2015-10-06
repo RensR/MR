@@ -21,7 +21,17 @@ class MessageController extends Controller {
     //Match VA with song in database
     //return the result (hardcoded youtube song right now)
     //the query will be the artist and song name.
+    var query = computeTokens(message);
+    var youtube = new helpers.Search();
+    var id = youtube.getVideoIDFromQuery(message);
+    Ok(Json.toJson((Message(id))))
+  }
 
+  def javascriptRoutes = Action { implicit request =>
+    Ok(Routes.javascriptRouter("jsRoutes")(routes.javascript.MessageController.getSong)).as(JAVASCRIPT)
+  }
+
+  def computeTokens(message : String){
     //------------------------------------Settings------------------------------------
     var stringWeight = 1;
     var punctWeight = 1;
@@ -32,8 +42,6 @@ class MessageController extends Controller {
     var punctMinAmount = 1;
     var emojiMinAmount = 1;
     var emoticonMinAmount = 1;
-
-
     //----------------------------------Initialization--------------------------------
     var stringList = List[String]();
     var punctList = List[String]();
@@ -53,57 +61,60 @@ class MessageController extends Controller {
 
     var messageVA = Vector(0.0, 0.0);
 
+    var normalText = (('a' to 'z') ++ ('A' to 'Z')).toSet
+    var puntuation = Array('.', ',', '!', '?').toSet
 
     //------------------------------------Tokenizer-----------------------------------
     //Specifically written for small text with emoticons and puntuation errors.
-    var tokens = message.split(" ");
+    var tokens = message.split(" ")
 
     for (token <- tokens){
-      stringTemp = "";
-      var emoticon = false;
-      var emoji = false;
+      stringTemp = ""
+      var emoticon = false
+      var emoji = false
 
       for (charTemp <- token){
-        //Type is string
-        if (((charTemp >= 'A' && charTemp <= 'Z') || (charTemp >= 'a' && charTemp <= 'z')) && !emoticon && !emoji){
-          stringTemp += charTemp;
-        }
-        //Type is puntuation
-        else if((charTemp == '.' || charTemp == ',' || charTemp == '!' || charTemp == '?') && !emoticon && !emoji){
-          if (stringTemp != ""){
-            stringList = (stringTemp :: stringList);
-            stringTemp = "";
+        if(!emoticon){
+          //Type is string
+          if (normalText.contains(charTemp) && !emoji){
+            stringTemp += charTemp
           }
-          stringTemp += charTemp;
-          punctList = (stringTemp :: punctList);
-          stringTemp = "";
+          //Type is puntuation
+          else if(puntuation.contains(charTemp) && !emoji){
+            if (stringTemp != ""){
+              stringList = stringTemp :: stringList
+              stringTemp = ""
+            }
+            stringTemp += charTemp
+            punctList = stringTemp :: punctList
+            stringTemp = ""
+          }
+          //Type is emoji
+          else if(charTemp == '%' || emoji){
+            stringTemp += charTemp
+            emoji = true
+          }
         }
-        //Type is emoji
-        else if((charTemp == '%' || emoji) && !emoticon){
-          stringTemp += charTemp;
-          emoji = true;
-        }
-        //Type is textual emoticon
-        else 
-        {
+        else{
+          //Type is textual emoticon
           if (stringTemp != "" && !emoticon){
-            stringList = (stringTemp :: stringList);
-            stringTemp = "";
+            stringList = stringTemp :: stringList
+            stringTemp = ""
           }
-          emoticon = true;
-          stringTemp += charTemp;
+          emoticon = true
+          stringTemp += charTemp
         }
       } 
       //Reset lists   
       if (stringTemp != ""){
         if (emoji) {
-          emojiList = (stringTemp :: emojiList);
+          emojiList = stringTemp :: emojiList
         }
         else if (emoticon){
-          emoticonList = (stringTemp :: emoticonList);
+          emoticonList = stringTemp :: emoticonList
         }
         else {
-          stringList = (stringTemp :: stringList);
+          stringList = stringTemp :: stringList
         }
       }
     }
@@ -113,8 +124,6 @@ class MessageController extends Controller {
     var count = 0;
     for (string <- stringList){
       //Query tabel sentimentdictionary with string
-
-
       count += 1;
       if (count >= stringMinAmount){
         containsString = 1;
@@ -125,8 +134,6 @@ class MessageController extends Controller {
     count = 0;
     for (punct <- punctList){
       //Query tabel punctuationdictionary with punct
-
-
       count += 1;
       if (count >= punctMinAmount){
         containsPunct = 1;
@@ -137,9 +144,6 @@ class MessageController extends Controller {
     count = 0;
     for (emoji <- emojiList){
       //Query tabel emojidictionary with emoji
-
-
-
       count += 1;
       if (count >= emojiMinAmount){
         containsEmoji = 1;
@@ -151,7 +155,6 @@ class MessageController extends Controller {
     count = 0;
     for (emoticon <- emoticonList){
       //Query tabel emoticondictionary with emoticon
-
       count += 1;
       if (count >= emoticonMinAmount){
         containsEmoticon = 1;
@@ -173,15 +176,5 @@ class MessageController extends Controller {
 
     //Get result vector
     //messageVA = stringVA * punctVA * emojiVA * emoticonVA
-
-    var query = message;
-    var youtube = new helpers.Search();
-    var id = youtube.getVideoIDFromQuery(message);
-    Ok(Json.toJson((Message(id))))
   }
-
-  def javascriptRoutes = Action { implicit request =>
-    Ok(Routes.javascriptRouter("jsRoutes")(routes.javascript.MessageController.getSong)).as(JAVASCRIPT)
-  }
-
 }
