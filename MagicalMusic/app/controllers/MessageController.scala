@@ -21,9 +21,9 @@ class MessageController extends Controller {
     //Match VA with song in database
     //return the result (hardcoded youtube song right now)
     //the query will be the artist and song name.
-    var query = computeTokens(message);
-    var youtube = new helpers.Search();
-    var id = youtube.getVideoIDFromQuery(message);
+    var query = computeTokens(message)
+    var youtube = new helpers.Search()
+    var id = youtube.getVideoIDFromQuery(message)
     Ok(Json.toJson((Message(id))))
   }
 
@@ -33,40 +33,40 @@ class MessageController extends Controller {
 
   def computeTokens(message : String){
     //------------------------------------Settings------------------------------------
-    var stringWeight = 1;
-    var punctWeight = 1;
-    var emojiWeight = 1;
-    var emoticonWeight = 1;
+    var stringWeight = 1
+    var punctWeight = 1
+    var emojiWeight = 1
+    var emoticonWeight = 1
 
-    var stringMinAmount = 2;
-    var punctMinAmount = 1;
-    var emojiMinAmount = 1;
-    var emoticonMinAmount = 1;
+    var stringMinAmount = 2
+    var punctMinAmount = 1
+    var emojiMinAmount = 1
+    var emoticonMinAmount = 1
     //----------------------------------Initialization--------------------------------
-    var stringList = List[String]();
-    var punctList = List[String]();
-    var emojiList = List[String]();
-    var emoticonList = List[String]();
-    var stringTemp = "";
+    var stringList = List[String]()
+    var punctList = List[String]()
+    var emojiList = List[String]()
+    var emoticonList = List[String]()
+    var stringTemp = ""
 
-    var containsString = 0;
-    var containsPunct = 0;
-    var containsEmoji = 0;
-    var containsEmoticon = 0;
+    var containsString = 0
+    var containsPunct = 0
+    var containsEmoji = 0
+    var containsEmoticon = 0
 
-    var stringVA = Vector(0.0, 0.0);
-    var punctVA = Vector(0.0, 0.0);
-    var emojiVA = Vector(0.0, 0.0);
-    var emoticonVA = Vector(0.0, 0.0); 
+    var stringVA = new VAVector(0.0, 0.0)
+    var punctVA = new VAVector(0.0, 0.0)
+    var emojiVA = new VAVector(0.0, 0.0)
+    var emoticonVA = new VAVector(0.0, 0.0) 
 
-    var messageVA = Vector(0.0, 0.0);
+    var messageVA = new VAVector(0.0, 0.0)
 
     var normalText = (('a' to 'z') ++ ('A' to 'Z')).toSet
     var puntuation = Array('.', ',', '!', '?').toSet
 
     //------------------------------------Tokenizer-----------------------------------
     //Specifically written for small text with emoticons and puntuation errors.
-    var tokens = message.split(" ")
+    var tokens = message.split("\\s+")
 
     for (token <- tokens){
       stringTemp = ""
@@ -121,60 +121,94 @@ class MessageController extends Controller {
 
     //-------------------------------Dictionary Lookup---------------------------------
 
-    var count = 0;
+    var count = 0
     for (string <- stringList){
       //Query tabel sentimentdictionary with string
-      count += 1;
+      count += 1
       if (count >= stringMinAmount){
-        containsString = 1;
+        containsString = 1
       }
-      Logger.debug(string);
+      Logger.debug(string)
     }
 
-    count = 0;
+    count = 0
     for (punct <- punctList){
       //Query tabel punctuationdictionary with punct
-      count += 1;
+      count += 1
       if (count >= punctMinAmount){
-        containsPunct = 1;
+        containsPunct = 1
       }
-      Logger.debug(punct);
+      Logger.debug(punct)
     }
 
-    count = 0;
+    count = 0
     for (emoji <- emojiList){
       //Query tabel emojidictionary with emoji
-      count += 1;
+      count += 1
       if (count >= emojiMinAmount){
-        containsEmoji = 1;
+        containsEmoji = 1
       }
-      Logger.debug(emoji);
+      Logger.debug(emoji)
     }
 
 
-    count = 0;
+    count = 0
     for (emoticon <- emoticonList){
       //Query tabel emoticondictionary with emoticon
-      count += 1;
+      count += 1
       if (count >= emoticonMinAmount){
-        containsEmoticon = 1;
+        containsEmoticon = 1
       }
-      Logger.debug(emoticon);
+      Logger.debug(emoticon)
     }
 
     //---------------------------Calculate Message Vector-------------------------------
     //Scale vectors with settings
-    var stringScaler = containsString * (stringWeight / (punctWeight * emojiWeight * emoticonWeight));
-    var punctScaler = containsPunct * (punctWeight / (stringWeight * emojiWeight * emoticonWeight));
-    var emojiScaler = containsEmoji * (emojiWeight / (punctWeight * stringWeight * emoticonWeight));
-    var emoticonScaler = containsEmoticon * (emoticonWeight / (punctWeight * emojiWeight * stringWeight));
+    var stringScaler: Double = containsString * (stringWeight / (punctWeight * emojiWeight * emoticonWeight))
+    var punctScaler: Double = containsPunct * (punctWeight / (stringWeight * emojiWeight * emoticonWeight))
+    var emojiScaler: Double = containsEmoji * (emojiWeight / (punctWeight * stringWeight * emoticonWeight))
+    var emoticonScaler: Double = containsEmoticon * (emoticonWeight / (punctWeight * emojiWeight * stringWeight))
 
-    // stringVA *= stringScaler;
-    // punctVA *= punctScaler;
-    // emojiVA *= emojiScaler;
-    // emoticonVA *= emoticonScaler;
+    stringVA.Multiply(stringScaler)
+    punctVA.Multiply(punctScaler)
+    emojiVA.Multiply(emojiScaler)
+    emoticonVA.Multiply(emoticonScaler)
 
     //Get result vector
-    //messageVA = stringVA * punctVA * emojiVA * emoticonVA
+    messageVA.Average(List(stringVA, punctVA, emojiVA, emoticonVA))
+    Logger.debug(messageVA.toString())
   }
+}
+
+class VAVector(valence: Double, arousal: Double){
+  var v: Double = valence
+  var a: Double = arousal 
+
+  def Multiply(scalar: Double){
+    v *= scalar
+    a *= scalar
+  }
+
+  def Add(vector: VAVector){
+    v += vector.v
+    a += vector.a
+  }
+
+  def Average(vectors: List[VAVector]){
+    var vSum = 0.0
+    var aSum = 0.0
+    var count = 0;
+
+    for (vector <- vectors){
+      if(vector.a != 0 || vector.v != 0){
+        count += 1;
+      }
+      vSum += vector.v
+      aSum += vector.a
+    }
+    v = vSum / count
+    a = aSum / count
+  }
+
+  override def toString(): String = "Valence: " + v + ", Arousal: " + a;
 }
