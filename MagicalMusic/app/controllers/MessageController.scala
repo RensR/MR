@@ -59,10 +59,12 @@ class MessageController extends Controller {
     var emojiVA = new VAVector(0.0, 0.0)
     var emoticonVA = new VAVector(0.0, 0.0) 
 
-    var messageVA = new VAVector(0.0, 0.0)
+    var stringVAs = List[VAVector]()
+    var punctVAs = List[VAVector]()
+    var emojiVAs = List[VAVector]()
+    var emoticonVAs = List[VAVector]() 
 
-    var normalText = (('a' to 'z') ++ ('A' to 'Z')).toSet
-    var puntuation = Array('.', ',', '!', '?').toSet
+    var messageVA = new VAVector(0.0, 0.0)
 
     //------------------------------------Tokenizer-----------------------------------
     //Specifically written for small text with emoticons and puntuation errors.
@@ -74,26 +76,24 @@ class MessageController extends Controller {
       var emoji = false
 
       for (charTemp <- token){
-        if(!emoticon){
-          //Type is string
-          if (normalText.contains(charTemp) && !emoji){
-            stringTemp += charTemp
-          }
-          //Type is puntuation
-          else if(puntuation.contains(charTemp) && !emoji){
-            if (stringTemp != ""){
-              stringList = stringTemp :: stringList
-              stringTemp = ""
-            }
-            stringTemp += charTemp
-            punctList = stringTemp :: punctList
+        //Type is string
+        if (((charTemp >= 'A' && charTemp <= 'Z') || (charTemp >= 'a' && charTemp <= 'z')) && !emoticon && !emoji){
+          stringTemp += charTemp
+        }
+        //Type is puntuation
+        else if((charTemp == '.' || charTemp == ',' || charTemp == '!' || charTemp == '?') && !emoticon && !emoji){
+          if (stringTemp != ""){
+            stringList = stringTemp :: stringList
             stringTemp = ""
           }
-          //Type is emoji
-          else if(charTemp == '%' || emoji){
-            stringTemp += charTemp
-            emoji = true
-          }
+          stringTemp += charTemp
+          punctList = stringTemp :: punctList
+          stringTemp = ""
+        }
+        //Type is emoji
+        else if((charTemp == '%' || emoji) && !emoticon){
+          stringTemp += charTemp
+          emoji = true
         }
         else{
           //Type is textual emoticon
@@ -124,31 +124,40 @@ class MessageController extends Controller {
     var count = 0
     for (string <- stringList){
       //Query tabel sentimentdictionary with string
-      count += 1
-      if (count >= stringMinAmount){
-        containsString = 1
-      }
+      DB.withConnection{ conn =>
+      val stmt = conn.createStatement
+        val rs = stmt.executeQuery("SELECT * from test")
+        for (r <- rs) {
+          count += 1
+          names = r.getString("name") :: names
+      } 
+      
       Logger.debug(string)
+    }
+    if (count >= stringMinAmount){
+      containsString = 1
     }
 
     count = 0
     for (punct <- punctList){
       //Query tabel punctuationdictionary with punct
       count += 1
-      if (count >= punctMinAmount){
-        containsPunct = 1
-      }
+      
       Logger.debug(punct)
+    }
+    if (count >= punctMinAmount){
+      containsPunct = 1
     }
 
     count = 0
     for (emoji <- emojiList){
       //Query tabel emojidictionary with emoji
       count += 1
-      if (count >= emojiMinAmount){
-        containsEmoji = 1
-      }
+      
       Logger.debug(emoji)
+    }
+    if (count >= emojiMinAmount){
+      containsEmoji = 1
     }
 
 
@@ -156,10 +165,11 @@ class MessageController extends Controller {
     for (emoticon <- emoticonList){
       //Query tabel emoticondictionary with emoticon
       count += 1
-      if (count >= emoticonMinAmount){
-        containsEmoticon = 1
-      }
+      
       Logger.debug(emoticon)
+    }
+    if (count >= emoticonMinAmount){
+      containsEmoticon = 1
     }
 
     //---------------------------Calculate Message Vector-------------------------------
@@ -197,11 +207,11 @@ class VAVector(valence: Double, arousal: Double){
   def Average(vectors: List[VAVector]){
     var vSum = 0.0
     var aSum = 0.0
-    var count = 0;
+    var count = 0
 
     for (vector <- vectors){
       if(vector.a != 0 || vector.v != 0){
-        count += 1;
+        count += 1
       }
       vSum += vector.v
       aSum += vector.a
