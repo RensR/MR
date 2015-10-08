@@ -126,11 +126,18 @@ class MessageController extends Controller {
       //Query tabel sentimentdictionary with string
       DB.withConnection{ conn =>
       val stmt = conn.createStatement
-        val rs = stmt.executeQuery("SELECT * from test")
+        val rs = stmt.executeQuery("SELECT * FROM text WHERE (Word = '" + string + "'")
         for (r <- rs) {
           count += 1
-          names = r.getString("name") :: names
-      } 
+          var vMean = r.getInt("VMean")
+          var vStd = r.getInt("VSTD")
+          var vF = r.getInt("VF")
+          var aMean = r.getInt("AMean")
+          var aStd = r.getInt("ASTD")
+          var aF = r.getInt("AF")
+          
+          //do stuff with it
+      }
       
       Logger.debug(string)
     }
