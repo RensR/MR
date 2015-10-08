@@ -135,8 +135,14 @@ class MessageController extends Controller {
           var aMean = r.getInt("AMean")
           var aStd = r.getInt("ASTD")
           var aF = r.getInt("AF")
-          
-          //do stuff with it
+
+          //temporary
+          var v = vMean * (1.0/vStd)
+          var a = aMean * (1.0/aStd)
+          var VA = new VAVector(v, a)
+
+          //add the vector to the list of vectors
+          stringVAs = VA :: stringVAs
       }
       
       Logger.debug(string)
@@ -225,6 +231,12 @@ class VAVector(valence: Double, arousal: Double){
     }
     v = vSum / count
     a = aSum / count
+  }
+
+//calculate the Minkowski distance
+  def Distance(vector: VAVector)
+  {
+
   }
 
   override def toString(): String = "Valence: " + v + ", Arousal: " + a;
