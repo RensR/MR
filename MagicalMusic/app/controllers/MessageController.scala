@@ -127,22 +127,26 @@ class MessageController extends Controller {
       DB.withConnection{ conn =>
       val stmt = conn.createStatement
         val rs = stmt.executeQuery("SELECT * FROM text WHERE (Word = '" + string + "'")
-        for (r <- rs) {
+
+        //Test if it's a ANEW word...
+        val testEmpty = rs;
+        if (!testEmpty.next()){
           count += 1
-          var vMean = r.getInt("VMean")
-          var vStd = r.getInt("VSTD")
-          var vF = r.getInt("VF")
-          var aMean = r.getInt("AMean")
-          var aStd = r.getInt("ASTD")
-          var aF = r.getInt("AF")
+          for (r <- rs) {
+            var vMean = r.getInt("VMean")
+            var vStd = r.getInt("VSTD")
+            var aMean = r.getInt("AMean")
+            var aStd = r.getInt("ASTD")
 
-          //temporary
-          var v = vMean * (1.0/vStd)
-          var a = aMean * (1.0/aStd)
-          var VA = new VAVector(v, a)
+            //temporary
+            var v = vMean * (1.0/vStd)
+            var a = aMean * (1.0/aStd)
+            var VA = new VAVector(v, a)
 
-          //add the vector to the list of vectors
-          stringVAs = VA :: stringVAs
+            //add the vector to the list of vectors
+            stringVAs = VA :: stringVAs
+          }
+        }
       }
       
       Logger.debug(string)
@@ -154,7 +158,30 @@ class MessageController extends Controller {
     count = 0
     for (punct <- punctList){
       //Query tabel punctuationdictionary with punct
-      count += 1
+      DB.withConnection{ conn =>
+      val stmt = conn.createStatement
+        val rs = stmt.executeQuery("SELECT * FROM punctuation WHERE (Word = '" + punct + "'")
+
+        //Test if it's a ANEW word...
+        val testEmpty = rs;
+        if (!testEmpty.next()){
+          count += 1
+          for (r <- rs) {
+            var vMean = r.getInt("VMean")
+            var vStd = r.getInt("VSTD")
+            var aMean = r.getInt("AMean")
+            var aStd = r.getInt("ASTD")
+
+            //temporary
+            var v = vMean * (1.0/vStd)
+            var a = aMean * (1.0/aStd)
+            var VA = new VAVector(v, a)
+
+            //add the vector to the list of vectors
+            stringVAs = VA :: stringVAs
+          }
+        }
+      }
       
       Logger.debug(punct)
     }
@@ -165,7 +192,30 @@ class MessageController extends Controller {
     count = 0
     for (emoji <- emojiList){
       //Query tabel emojidictionary with emoji
-      count += 1
+      DB.withConnection{ conn =>
+      val stmt = conn.createStatement
+        val rs = stmt.executeQuery("SELECT * FROM emoji WHERE (Word = '" + emoji + "'")
+
+        //Test if it's a ANEW word...
+        val testEmpty = rs;
+        if (!testEmpty.next()){
+          count += 1
+          for (r <- rs) {
+            var vMean = r.getInt("VMean")
+            var vStd = r.getInt("VSTD")
+            var aMean = r.getInt("AMean")
+            var aStd = r.getInt("ASTD")
+
+            //temporary
+            var v = vMean * (1.0/vStd)
+            var a = aMean * (1.0/aStd)
+            var VA = new VAVector(v, a)
+
+            //add the vector to the list of vectors
+            stringVAs = VA :: stringVAs
+          }
+        }
+      }
       
       Logger.debug(emoji)
     }
@@ -177,7 +227,30 @@ class MessageController extends Controller {
     count = 0
     for (emoticon <- emoticonList){
       //Query tabel emoticondictionary with emoticon
-      count += 1
+      DB.withConnection{ conn =>
+      val stmt = conn.createStatement
+        val rs = stmt.executeQuery("SELECT * FROM emoticon WHERE (Word = '" + emoticon + "'")
+
+        //Test if it's a ANEW word...
+        val testEmpty = rs;
+        if (!testEmpty.next()){
+          count += 1
+          for (r <- rs) {
+            var vMean = r.getInt("VMean")
+            var vStd = r.getInt("VSTD")
+            var aMean = r.getInt("AMean")
+            var aStd = r.getInt("ASTD")
+
+            //temporary
+            var v = vMean * (1.0/vStd)
+            var a = aMean * (1.0/aStd)
+            var VA = new VAVector(v, a)
+
+            //add the vector to the list of vectors
+            stringVAs = VA :: stringVAs
+          }
+        }
+      }
       
       Logger.debug(emoticon)
     }
