@@ -30,7 +30,7 @@ dataread <- function(FILEPATH="/Users/evli/Desktop/MillionSongSubset/data",limit
   # Parameter for h5read. See h5ls(path to file) for list of group
   group <- "/"
   
-  fileList <- list.files(recursive = TRUE,path = FILEPATH, full.names = TRUE, pattern = "*.h5")[1000:1300]
+  fileList <- list.files(recursive = TRUE,path = FILEPATH, full.names = TRUE, pattern = "*.h5")[5000:5200]
   rawdata <- lapply(fileList, function(x) h5read(x,group))
   
   # Progress bar
@@ -65,6 +65,7 @@ dataread <- function(FILEPATH="/Users/evli/Desktop/MillionSongSubset/data",limit
     
     # Check is request is not empty
     val <- content(r,"parsed")
+
     if(length(val$response$songs) != 0){
       valence <- val$response$songs[[1]]$audio_summary$valence
       energy <-val$response$songs[[1]]$audio_summary$energy
@@ -72,7 +73,7 @@ dataread <- function(FILEPATH="/Users/evli/Desktop/MillionSongSubset/data",limit
 
       # TODO: add artist id
       song <- c(track_id,artist_name,meta$title,analysis$loudness,analysis$tempo,analysis$mode,analysis$mode_confidence,analysis$key,analysis$key_confidence,t(avg),t(dev),valence,energy)
-      m <- matrix(ncol = 34,nrow = 1)
+      m <- matrix(ncol = 35,nrow = 1)
       m <- data.frame(m)
       m <- rbind(m,song)
       
