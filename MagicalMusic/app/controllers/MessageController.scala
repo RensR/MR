@@ -126,7 +126,7 @@ class MessageController extends Controller {
       //Query tabel sentimentdictionary with string
       DB.withConnection{ conn =>
       val stmt = conn.createStatement
-        val rs = stmt.executeQuery("SELECT * FROM text WHERE (Word = '" + string + "'")
+        val rs = stmt.executeQuery("SELECT * FROM textdictionary WHERE (Word = '" + string + "'")
 
         //Test if it's a ANEW word...
         val testEmpty = rs;
@@ -229,7 +229,7 @@ class MessageController extends Controller {
       //Query tabel emoticondictionary with emoticon
       DB.withConnection{ conn =>
       val stmt = conn.createStatement
-        val rs = stmt.executeQuery("SELECT * FROM emoticon WHERE (Word = '" + emoticon + "'")
+        val rs = stmt.executeQuery("SELECT * FROM textualemoticon WHERE (Word = '" + emoticon + "'")
 
         //Test if it's a ANEW word...
         val testEmpty = rs;
