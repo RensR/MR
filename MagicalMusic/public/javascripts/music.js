@@ -24,17 +24,18 @@ $(function() {
                 //data is the result of the algorithm.
                 //show the song in a YouTube player:
                 youtube = document.getElementById('youtube');
+                introtext = document.getElementById('intro-text');
                 if(data.value != "No results.")
                 {
                     youtube.src = "http://www.youtube.com/embed/" + data.value + "?autoplay=1";
                     $(youtube).show();
-                    introtext = document.getElementById('intro-text');
                     $(introtext).hide();
                 }
                 else
                 {
-                    introtext = document.getElementById('intro-text');
                     introtext.innerHTML = "<h1>No results found</h1>";
+                    $(introtext).show();
+                    $(youtube).hide();
                 }
             }
         });
