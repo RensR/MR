@@ -14,10 +14,10 @@ class Application extends Controller {
       var names = List[String]()
   	  DB.withConnection{ conn =>
     	val stmt = conn.createStatement
-      	val rs = stmt.executeQuery("SELECT * from test")
+      	val rs = stmt.executeQuery("SELECT artist from music")
       	while (rs.next()) {
 
-      		names = rs.getString("name") :: names
+      		names = rs.getString("artist") :: names
     	}	
 	}
 
