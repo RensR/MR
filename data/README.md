@@ -26,7 +26,8 @@ The features present are the following;
 - [EchoNest Attributes](http://developer.echonest.com/acoustic-attributes.html)
 
 
-'''
+### How to create and fill the database in two query's
+"""
 CREATE TABLE `magicalmusic`.`music` (
   `id` INT NOT NULL AUTO_INCREMENT COMMENT '',
   `artist` VARCHAR(45) NOT NULL COMMENT '',
@@ -34,8 +35,7 @@ CREATE TABLE `magicalmusic`.`music` (
   `valence` DOUBLE NOT NULL COMMENT '',
   `arousal` DOUBLE NOT NULL COMMENT '',
   PRIMARY KEY (`id`)  COMMENT '');
-
-
+"""
+"""
 LOAD DATA LOCAL INFILE 'PATH TO CSV' INTO TABLE music FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n';
-
-'''
+"""
