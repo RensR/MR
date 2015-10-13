@@ -263,10 +263,10 @@ class MessageController extends Controller {
 
     //---------------------------Calculate Message Vector-------------------------------
     //Scale vectors with settings
-    var stringScaler: Double = containsString * (stringWeight / (punctWeight * emojiWeight * emoticonWeight))
-    var punctScaler: Double = containsPunct * (punctWeight / (stringWeight * emojiWeight * emoticonWeight))
-    var emojiScaler: Double = containsEmoji * (emojiWeight / (punctWeight * stringWeight * emoticonWeight))
-    var emoticonScaler: Double = containsEmoticon * (emoticonWeight / (punctWeight * emojiWeight * stringWeight))
+    var stringScaler: Double = containsString * stringWeight / (punctWeight * emojiWeight * emoticonWeight)
+    var punctScaler: Double = containsPunct * punctWeight / (stringWeight * emojiWeight * emoticonWeight)
+    var emojiScaler: Double = containsEmoji * emojiWeight / (punctWeight * stringWeight * emoticonWeight)
+    var emoticonScaler: Double = containsEmoticon * emoticonWeight / (punctWeight * emojiWeight * stringWeight)
 
     stringVA.Multiply(stringScaler)
     punctVA.Multiply(punctScaler)

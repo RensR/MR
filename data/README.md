@@ -26,3 +26,16 @@ The features present are the following;
 - [EchoNest Attributes](http://developer.echonest.com/acoustic-attributes.html)
 
 
+'''
+CREATE TABLE `magicalmusic`.`music` (
+  `id` INT NOT NULL AUTO_INCREMENT COMMENT '',
+  `artist` VARCHAR(45) NOT NULL COMMENT '',
+  `song` VARCHAR(45) NOT NULL COMMENT '',
+  `valence` DOUBLE NOT NULL COMMENT '',
+  `arousal` DOUBLE NOT NULL COMMENT '',
+  PRIMARY KEY (`id`)  COMMENT '');
+
+
+LOAD DATA LOCAL INFILE 'PATH TO CSV' INTO TABLE music FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n';
+
+'''
