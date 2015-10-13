@@ -6,6 +6,7 @@ import play.api.Routes
 import play.api.Logger
 import play.api._
 import play.api.db._
+import play.api.Play.current
 import java.io.IOException
 
 import helpers.Search._
@@ -35,10 +36,10 @@ class MessageController extends Controller {
 
   def computeTokens(message : String){
     //------------------------------------Settings------------------------------------
-    var stringWeight = 1
-    var punctWeight = 1
-    var emojiWeight = 1
-    var emoticonWeight = 1
+    var stringWeight = 5.0
+    var punctWeight = 1.0
+    var emojiWeight = 5.0
+    var emoticonWeight = 3.0
 
     var stringMinAmount = 2
     var punctMinAmount = 1
@@ -51,10 +52,10 @@ class MessageController extends Controller {
     var emoticonList = List[String]()
     var stringTemp = ""
 
-    var containsString = 0
-    var containsPunct = 0
-    var containsEmoji = 0
-    var containsEmoticon = 0
+    var containsString = false
+    var containsPunct = false
+    var containsEmoji = false
+    var containsEmoticon = false
 
     var stringVA = new VAVector(0.0, 0.0)
     var punctVA = new VAVector(0.0, 0.0)
@@ -123,157 +124,163 @@ class MessageController extends Controller {
 
     //-------------------------------Dictionary Lookup---------------------------------
 
-    // var count = 0
-    // for (string <- stringList){
-    //   //Query tabel sentimentdictionary with string
-    //   DB.withConnection{ conn =>
-    //   val stmt = conn.createStatement
-    //     val rs = stmt.executeQuery("SELECT * FROM textdictionary WHERE (Word = '" + string + "'")
+    var count = 0
+    for (string <- stringList){
+      //Query tabel sentimentdictionary with string
+      DB.withConnection{ conn =>
+      val stmt = conn.createStatement
+        val rs = stmt.executeQuery("SELECT * FROM textdictionary WHERE (Word = '" + string + "')")
+        // Test if it's a ANEW word...
+        while(rs.next()){
+          count += 1
+          var vMean = rs.getDouble("VMean")
+          var vStd = rs.getDouble("VSTD")
+          var aMean = rs.getDouble("AMean")
+          var aStd = rs.getDouble("ASTD")
 
-    //     //Test if it's a ANEW word...
-    //     val testEmpty = rs;
-    //     if (!testEmpty.next()){
-    //       count += 1
-    //       for (r <- rs) {
-    //         var vMean = r.getInt("VMean")
-    //         var vStd = r.getInt("VSTD")
-    //         var aMean = r.getInt("AMean")
-    //         var aStd = r.getInt("ASTD")
+          //temporary
+          var v = vMean * (1.0/vStd)
+          var a = aMean * (1.0/aStd)
+          var VA = new VAVector(v, a)
+          Logger.debug(VA.toString())
 
-    //         //temporary
-    //         var v = vMean * (1.0/vStd)
-    //         var a = aMean * (1.0/aStd)
-    //         var VA = new VAVector(v, a)
+          //add the vector to the list of vectors
+          stringVAs = VA :: stringVAs
+        }
+        
+      }
+    }
+    stringVA.Average(stringVAs)
+    Logger.debug(stringVA.toString())
+    if (count >= stringMinAmount){
+      containsString = true
+    }
 
-    //         //add the vector to the list of vectors
-    //         stringVAs = VA :: stringVAs
-    //       }
-    //     }
-    //   }
-      
-    //   Logger.debug(string)
-    // }
-    // if (count >= stringMinAmount){
-    //   containsString = 1
-    // }
+    count = 0
+    for (punct <- punctList){
+      //Query tabel punctuationdictionary with punct
+      DB.withConnection{ conn =>
+      val stmt = conn.createStatement
+        val rs = stmt.executeQuery("SELECT * FROM punctuation WHERE (Word = '" + punct + "')")
 
-    // count = 0
-    // for (punct <- punctList){
-    //   //Query tabel punctuationdictionary with punct
-    //   DB.withConnection{ conn =>
-    //   val stmt = conn.createStatement
-    //     val rs = stmt.executeQuery("SELECT * FROM punctuation WHERE (Word = '" + punct + "'")
+        //Test if it's a ANEW word...
+         while(rs.next()){
+          count += 1
+            var vMean = rs.getDouble("VMean")
+            var vStd = rs.getDouble("VSTD")
+            var aMean = rs.getDouble("AMean")
+            var aStd = rs.getDouble("ASTD")
 
-    //     //Test if it's a ANEW word...
-    //     val testEmpty = rs;
-    //     if (!testEmpty.next()){
-    //       count += 1
-    //       for (r <- rs) {
-    //         var vMean = r.getInt("VMean")
-    //         var vStd = r.getInt("VSTD")
-    //         var aMean = r.getInt("AMean")
-    //         var aStd = r.getInt("ASTD")
+            //temporary
+            var v = vMean * (1.0/vStd)
+            var a = aMean * (1.0/aStd)
+            var VA = new VAVector(v, a)
 
-    //         //temporary
-    //         var v = vMean * (1.0/vStd)
-    //         var a = aMean * (1.0/aStd)
-    //         var VA = new VAVector(v, a)
+            //add the vector to the list of vectors
+            punctVAs = VA :: punctVAs
+          
+        }
+      }
+    }
+    punctVA.Average(punctVAs)
+    if (count >= punctMinAmount){
+      containsPunct = true
+    }
 
-    //         //add the vector to the list of vectors
-    //         punctVAs = VA :: punctVAs
-    //       }
-    //     }
-    //   }
-      
-    //   Logger.debug(punct)
-    // }
-    // if (count >= punctMinAmount){
-    //   containsPunct = 1
-    // }
+    count = 0
+    for (emoji <- emojiList){
+      //Query tabel emojidictionary with emoji
+      DB.withConnection{ conn =>
+      val stmt = conn.createStatement
+        val rs = stmt.executeQuery("SELECT * FROM emoji WHERE (Word = '" + emoji + "')")
 
-    // count = 0
-    // for (emoji <- emojiList){
-    //   //Query tabel emojidictionary with emoji
-    //   DB.withConnection{ conn =>
-    //   val stmt = conn.createStatement
-    //     val rs = stmt.executeQuery("SELECT * FROM emoji WHERE (Word = '" + emoji + "'")
+        //Test if it's a ANEW word...
+         while(rs.next()){
+          count += 1
+            var vMean = rs.getDouble("VMean")
+            var vStd = rs.getDouble("VSTD")
+            var aMean = rs.getDouble("AMean")
+            var aStd = rs.getDouble("ASTD")
 
-    //     //Test if it's a ANEW word...
-    //     val testEmpty = rs;
-    //     if (!testEmpty.next()){
-    //       count += 1
-    //       for (r <- rs) {
-    //         var vMean = r.getInt("VMean")
-    //         var vStd = r.getInt("VSTD")
-    //         var aMean = r.getInt("AMean")
-    //         var aStd = r.getInt("ASTD")
+            //temporary
+            var v = vMean * (1.0/vStd)
+            var a = aMean * (1.0/aStd)
+            var VA = new VAVector(v, a)
 
-    //         //temporary
-    //         var v = vMean * (1.0/vStd)
-    //         var a = aMean * (1.0/aStd)
-    //         var VA = new VAVector(v, a)
-
-    //         //add the vector to the list of vectors
-    //         emojiVAs = VA :: emojiVAs
-    //       }
-    //     }
-    //   }
-      
-    //   Logger.debug(emoji)
-    // }
-    // if (count >= emojiMinAmount){
-    //   containsEmoji = 1
-    // }
+            //add the vector to the list of vectors
+            emojiVAs = VA :: emojiVAs
+          
+        }
+      }
+    }
+    emojiVA.Average(emojiVAs)
+    if (count >= emojiMinAmount){
+      containsEmoji = true
+    }
 
 
-    // count = 0
-    // for (emoticon <- emoticonList){
-    //   //Query tabel emoticondictionary with emoticon
-    //   DB.withConnection{ conn =>
-    //   val stmt = conn.createStatement
-    //     val rs = stmt.executeQuery("SELECT * FROM textualemoticon WHERE (Word = '" + emoticon + "'")
+    count = 0
+    for (emoticon <- emoticonList){
+      //Query tabel emoticondictionary with emoticon
+      var id = emoticon.substring(1, emoticon.length)
+      Logger.debug(id)
+      DB.withConnection{ conn =>
+      val stmt = conn.createStatement
+        val rs = stmt.executeQuery("SELECT * FROM textualemoticon WHERE (Word = '" + emoticon + "')")
 
-    //     //Test if it's a ANEW word...
-    //     val testEmpty = rs;
-    //     if (!testEmpty.next()){
-    //       count += 1
-    //       for (r <- rs) {
-    //         var vMean = r.getInt("VMean")
-    //         var vStd = r.getInt("VSTD")
-    //         var aMean = r.getInt("AMean")
-    //         var aStd = r.getInt("ASTD")
+        //Test if it's a ANEW word...
+        while(rs.next()){
+          count += 1
+            var vMean = rs.getDouble("VMean")
+            var vStd = rs.getDouble("VSTD")
+            var aMean = rs.getDouble("AMean")
+            var aStd = rs.getDouble("ASTD")
 
-    //         //temporary
-    //         var v = vMean * (1.0/vStd)
-    //         var a = aMean * (1.0/aStd)
-    //         var VA = new VAVector(v, a)
+            //temporary
+            var v = vMean * (1.0/vStd)
+            var a = aMean * (1.0/aStd)
+            var VA = new VAVector(v, a)
 
-    //         //add the vector to the list of vectors
-    //         emoticonVAs = VA :: emoticonVAs
-    //       }
-    //     }
-    //   }
-      
-    //   Logger.debug(emoticon)
-    // }
-    // if (count >= emoticonMinAmount){
-    //   containsEmoticon = 1
-    // }
+            //add the vector to the list of vectors
+            emoticonVAs = VA :: emoticonVAs
+          
+        }
+      }
+    }
+    emoticonVA.Average(emoticonVAs)
+    if (count >= emoticonMinAmount){
+      containsEmoticon = true
+    }
 
     //---------------------------Calculate Message Vector-------------------------------
     //Scale vectors with settings
-    var stringScaler: Double = containsString * (stringWeight / (punctWeight * emojiWeight * emoticonWeight))
-    var punctScaler: Double = containsPunct * (punctWeight / (stringWeight * emojiWeight * emoticonWeight))
-    var emojiScaler: Double = containsEmoji * (emojiWeight / (punctWeight * stringWeight * emoticonWeight))
-    var emoticonScaler: Double = containsEmoticon * (emoticonWeight / (punctWeight * emojiWeight * stringWeight))
+    var stringScaler: Double = stringWeight / (punctWeight * emojiWeight * emoticonWeight)
+    var punctScaler: Double = punctWeight / (stringWeight * emojiWeight * emoticonWeight)
+    var emojiScaler: Double = emojiWeight / (punctWeight * stringWeight * emoticonWeight)
+    var emoticonScaler: Double = emoticonWeight / (punctWeight * emojiWeight * stringWeight)
 
-    stringVA.Multiply(stringScaler)
-    punctVA.Multiply(punctScaler)
-    emojiVA.Multiply(emojiScaler)
-    emoticonVA.Multiply(emoticonScaler)
+    if(!containsString){ stringScaler = 0}
+    if(!containsPunct){ punctScaler = 0}
+    if(!containsEmoji){ emojiScaler = 0}
+    if(!containsEmoticon){ emoticonScaler = 0}
+
+    var totalScaler = stringScaler + punctScaler + emojiScaler + emoticonScaler
+
+    stringVA.Multiply(stringScaler / totalScaler)
+    punctVA.Multiply(punctScaler / totalScaler)
+    emojiVA.Multiply(emojiScaler / totalScaler)
+    emoticonVA.Multiply(emoticonScaler / totalScaler)
+
+    var messageVAs = List[VAVector]()
+
+    if(containsString){ messageVAs = stringVA :: messageVAs}
+    if(containsPunct){ messageVAs = punctVA :: messageVAs}
+    if(containsEmoji){ messageVAs = emojiVA :: messageVAs}
+    if(containsEmoticon){ messageVAs = emoticonVA :: messageVAs}
+    Logger.debug(messageVAs.toString())
 
     //Get result vector
-    messageVA.Average(List(stringVA, punctVA, emojiVA, emoticonVA))
+    messageVA.Average(messageVAs)
     Logger.debug(messageVA.toString())
   }
 }
