@@ -24,6 +24,7 @@ class MessageController extends Controller {
     //return the result (hardcoded youtube song right now)
     //the query will be the artist and song name.
     var query = computeTokens(message)
+    Logger.debug("Query = " + query)
     var youtube = new helpers.Search()
     var id = youtube.getVideoIDFromQuery(message)
     Ok(Json.toJson((Message(id))))
