@@ -30,6 +30,7 @@ The features present are the following;
 ```
 CREATE TABLE `magicalmusic`.`music` (
   `id` INT NOT NULL AUTO_INCREMENT COMMENT '',
+  `msdid` VARCHAR(30) NOT NULL COMMENT '',
   `artist` VARCHAR(45) NOT NULL COMMENT '',
   `song` VARCHAR(45) NOT NULL COMMENT '',
   `valence` DOUBLE NOT NULL COMMENT '',
