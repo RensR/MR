@@ -37,5 +37,44 @@ CREATE TABLE `magicalmusic`.`music` (
   PRIMARY KEY (`id`)  COMMENT '');
 ```
 ```
+
+CREATE TABLE `emoji` (
+  `ID` int(11) DEFAULT NULL,
+  `VMean` text,
+  `VSTD` text,
+  `AMean` text,
+  `ASTD` text
+) 
+
+
+CREATE TABLE `punctuation` (
+  `ID` int(11) DEFAULT NULL,
+  `VMean` text,
+  `VSTD` text,
+  `AMean` text,
+  `ASTD` text
+)
+
+CREATE TABLE `textdictionary` (
+  `ID` int(11) DEFAULT NULL,
+  `Word` text,
+  `VMean` double DEFAULT NULL,
+  `VSTD` double DEFAULT NULL,
+  `VF` int(11) DEFAULT NULL,
+  `AMean` double DEFAULT NULL,
+  `ASTD` double DEFAULT NULL,
+  `AF` int(11) DEFAULT NULL
+)
+
+
+CREATE TABLE `textualemoticons` (
+  `ID` int(11) DEFAULT NULL,
+  `VMean` text,
+  `VSTD` text,
+  `Amean` text,
+  `ASTD` text
+)
+
+
 LOAD DATA LOCAL INFILE 'PATH TO CSV' INTO TABLE music FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n';
 ```
