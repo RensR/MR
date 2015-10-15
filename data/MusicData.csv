@@ -5,7 +5,7 @@
  ,David Palmer,Émergences: III. Fragments d'épaves,0.03657,0.002363
  ,Diamanda Galas,Vena Cava 8,0.034455,0.002461
  ,Georges Brassens,Colombine,0.69254,0.002784
- ,David Zinman;Pittsburgh Symphony Orchestra,Concerto for Orchestra (Zoroastrian Riddles) (1996)/3. Adagio non troppo,0.035855,0.004031
+ ,David Zinman Pittsburgh Symphony Orchestra,Concerto for Orchestra (Zoroastrian Riddles) (1996)/3. Adagio non troppo,0.035855,0.004031
  ,The Beatles,Derek Taylor - Introduction,0.832064,0.004709
  ,The American Boychoir,Intermezzo,0.051657,0.006685
  ,James Horner,Atmosphere Station,0.031822,0.006698
@@ -15,7 +15,7 @@
  ,Gonzalo Rubalcaba,Yesterdays,0.115464,0.00926
  ,Stephan Micus,Contessa Entellina,0.039971,0.009368
  ,Jane Winther,Kyrie Eleison,0.237017,0.009614
- ,Michèle Crider;Eleonora Jankovic;Vincenzo La Scola;Riccardo Muti,Mefistofele/La luna immobile,0.03777,0.009619
+ ,Michèle Crider Eleonora Jankovic Vincenzo La Scola Riccardo Muti,Mefistofele/La luna immobile,0.03777,0.009619
  ,Dan Shen_ Gruppo Vocale Cantemus_ Ensemble Airone_ Luigi Marzola,Miserere: IV. Quoniam Iniquitatem,0.100559,0.010603
  ,Dave Eggar,Sorrow's Call,0.216225,0.011212
  ,John Davis,Knocked Out Of The Park,0.203015,0.014472
@@ -203,7 +203,7 @@
  ,Rainbow,Rainbow Eyes,0.150385,0.137554
  ,Lightnin' Hopkins,Everyday I Have The Blues,0.551583,0.139111
  ,Charlie Rich,You Don't Know Me,0.190193,0.139241
- ,Ramón Vargas;Vesselina Kasarova;Vladimir Jurowski,Werther - Lyric Drama in four Acts/Act I/Rêve! Extase! Bonheur!,0.037769,0.139306
+ ,Ramón Vargas Vesselina Kasarova Vladimir Jurowski,Werther - Lyric Drama in four Acts/Act I/Rêve! Extase! Bonheur!,0.037769,0.139306
  ,Ada Jane,The Queen's Treatment,0.12831,0.139562
  ,Champion Jack Dupree,Christina Christina Blues,0.228917,0.1401
  ,Champion Jack Dupree,Christina Christina Blues,0.228917,0.1401
@@ -256,7 +256,7 @@
  ,Jacques Douai,Mes Belles Amourettes,0.295178,0.156711
  ,Christie Hennessy,Roll Back The Clouds,0.344941,0.157445
  ,Electric Light Orchestra,Indian Queen,0.328575,0.157613
- ,Nick Ingman;Gavyn Wright,Wessex Loses a Bride,0.039305,0.15774
+ ,Nick Ingman Gavyn Wright,Wessex Loses a Bride,0.039305,0.15774
  ,Billy Bragg,Goodbye (Solo Version),0.383598,0.158198
  ,Kevin Burke,Brendan McGlinchey's Reel (Splendid Isolation) / Sweeney's Buttermilk (medley),0.967135,0.158604
  ,Herbert Von Karajan,"Die Fledermaus - Operette in drei Akten/Silvester-Einlagen/Dein ist mein ganzes Herz (aus \Das Land des Lächelns\"")""",0.174434,0.158734
@@ -416,7 +416,7 @@
  ,Antonio Koudele,Track TAKE FIVE,0.472455,0.219629
  ,Minipop,Fingerprints,0.163959,0.219971
  ,M83,You Appearing,0.193581,0.219986
- ,Arthur Fiedler;Earl Wild;Pasquale Cardillo,Rhapsody In Blue,0.099266,0.220571
+ ,Arthur Fiedler Earl Wild Pasquale Cardillo,Rhapsody In Blue,0.099266,0.220571
  ,Sonora Santanera,Amor De Cabaret,0.645379,0.221281
  ,The Impressions,I Found You,0.713157,0.221437
  ,Jacques Douai,Pauvre Jean,0.50756,0.223059
@@ -1122,7 +1122,7 @@
  ,DJ Nasty,Pussy Hole,0.690541,0.409264
  ,Daft Punk,Da Funk,0.919918,0.409426
  ,Tommy Overstreet,Heart Of Dixie,0.468603,0.409702
- ,Walter Jackson; Arranged & conducted by Riley Hampton,Moonlight In Vermont,0.261819,0.410077
+ ,Walter Jackson  Arranged & conducted by Riley Hampton,Moonlight In Vermont,0.261819,0.410077
  ,The Clancy Brothers,Water Is Alright In Tay,0.949173,0.410146
  ,Gloria De Haven,Red Hot Pepper Pot,0.845381,0.410318
  ,ColdWorld,Schmerzensschreie,0.03706,0.410621
@@ -1402,7 +1402,7 @@
  ,Kanye West,Street Lights,0.454032,0.486612
  ,Professor Longhair,Junco Partner,0.959578,0.486746
  ,La Portuaria,Hasta El Final,0.51769,0.486772
- ,The Clancy Brothers;Tommy Makem,In This Windy Old Weather,0.671099,0.486816
+ ,The Clancy Brothers Tommy Makem,In This Windy Old Weather,0.671099,0.486816
  ,Café Quijano,Poesía De Amor,0.612352,0.486939
  ,Tijuana Hercules,When The Moon Comes Up Wild,0.314379,0.487691
  ,Barbarito Diez,De Paris Un Caballero,0.955499,0.48775
@@ -3040,7 +3040,7 @@
  ,Faiz Ali Faiz,Lagian ne maujan,0.911828,0.821746
  ,A-Studio,S.O.S.,0.733642,0.821958
  ,In Extremo,Signapur,0.28356,0.822245
- ,José Augusto;Catia Guimma,Tudo Que Você Quiser,0.613804,0.822353
+ ,José Augusto Catia Guimma,Tudo Que Você Quiser,0.613804,0.822353
  ,Rockin' Dopsie_ Jr.,Down at the Mardi Gras,0.961722,0.822578
  ,Tito Puente,China,0.963249,0.822763
  ,Dave Weckl,Just An Illusion,0.925537,0.822776
@@ -3364,7 +3364,7 @@
  ,Salt The Wound,The Beginning,0.329728,0.885284
  ,Soul Asylum,Freaks (Album Version),0.46383,0.885379
  ,The Gone Jackals,Not Buried Deep Enough,0.225097,0.885579
- ,The Vaughan Brothers;Stevie Ray Vaughan;Jimmy Vaughan,Telephone Song,0.856152,0.886304
+ ,The Vaughan Brothers Stevie Ray Vaughan Jimmy Vaughan,Telephone Song,0.856152,0.886304
  ,Bryan Ferry,Wildcat Days (1999 Digital Remaster),0.957967,0.886311
  ,L.A. Guns,Magdalaine,0.470284,0.886616
  ,Sirka Ragnar,Port now!,0.437805,0.886834
@@ -3821,7 +3821,7 @@
  ,Joe Rogan,Telepathy/Ted Haggard Got Cured of the Gay,0.444222,0.961502
  ,Statues,The Last Stand,0.696932,0.961553
  ,Shamen,Phorever People,0.48215,0.96178
- ,Republica;Jonny Male;Dave Arch,Ready To Go,0.340191,0.961841
+ ,Republica Jonny Male Dave Arch,Ready To Go,0.340191,0.961841
  ,Descendents,I'm Not A Loser,0.552943,0.962823
  ,The Tragically Hip,The Drop-Off,0.742045,0.963227
  ,Agnostic Front,Come Alive,0.414553,0.963259
