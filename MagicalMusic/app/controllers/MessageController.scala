@@ -25,9 +25,12 @@ class MessageController extends Controller {
     //return the result (hardcoded youtube song right now)
     //the query will be the artist and song name.
     var query = computeTokens(message)
-    Logger.debug("Query = " + query)
+    Logger.debug("Query = " + query.toString())
+
+    var songID = getSongID(query.v, query.a)
+    Logger.debug("Song found!  " + songID)
     var youtube = new helpers.Search()
-    var id = youtube.getVideoIDFromQuery(message)
+    var id = youtube.getVideoIDFromQuery(songID)
     Ok(Json.toJson((Message(id))))
   }
 
@@ -35,7 +38,55 @@ class MessageController extends Controller {
     Ok(Routes.javascriptRouter("jsRoutes")(routes.javascript.MessageController.getSong)).as(JAVASCRIPT)
   }
 
-  def computeTokens(message : String){
+  def getSongID(vvalence : Double, varousal : Double): String = {
+    var valence = 0.2
+    var arousal = 0.2
+    if (!vvalence.isNaN) {
+        valence = vvalence
+    }
+    if (!arousal.isNaN) {
+        arousal = varousal
+    }
+
+    var songs = List[Song]()
+    DB.withConnection{ conn =>
+        val stmt = conn.createStatement
+        val rs = stmt.executeQuery("""SELECT song, artist, arousal, valence FROM 
+            ( ( SELECT song, artist, arousal, valence, """ + valence + """-valence AS diff
+                FROM music
+                WHERE valence < """ + valence + """
+                ORDER BY valence DESC
+                  LIMIT 20
+              ) 
+              UNION ALL
+              ( SELECT song, artist, arousal, valence, valence-""" + valence + """ AS diff
+                FROM music
+                WHERE valence >= """ + valence + """
+                ORDER BY valence ASC
+                  LIMIT 20
+              ) 
+            ) AS tmp
+            ORDER BY diff
+            LIMIT 20 ;""".replaceAll("\n", " "))
+
+
+
+        while(rs.next()){
+            var song = rs.getString("song")
+            var artist = rs.getString("artist")
+            var tempArousal = rs.getDouble("arousal")
+            var tempValence = rs.getDouble("valence")
+            Logger.debug("song = " + song + " from " + artist + "   with valence and arousal " + tempValence + ", " + tempArousal
+                + " with distance " + math.abs(arousal - tempArousal) + math.abs(valence - tempValence))
+            songs = new Song(artist, song, tempValence, tempArousal) :: songs
+        }
+    }
+    // Sorts the songs by distance and return the best one
+    songs.sortWith(_.distance(valence, arousal) < _.distance(valence, arousal))(0).toString()
+  }
+
+
+  def computeTokens(message : String): VAVector = {
     //------------------------------------Settings------------------------------------
     var stringWeight = 5.0
     var punctWeight = 1.0
@@ -127,10 +178,11 @@ class MessageController extends Controller {
 
     var count = 0
     for (string <- stringList){
+      Logger.debug("String = " + string)
       //Query tabel sentimentdictionary with string
       DB.withConnection{ conn =>
       val stmt = conn.createStatement
-        val rs = stmt.executeQuery("SELECT * FROM textdictionary WHERE (Word = '" + string + "')")
+        val rs = stmt.executeQuery("SELECT * FROM textdictionary WHERE Word = '" + string + "'")
         // Test if it's a ANEW word...
         while(rs.next()){
           count += 1
@@ -148,7 +200,6 @@ class MessageController extends Controller {
           //add the vector to the list of vectors
           stringVAs = VA :: stringVAs
         }
-        
       }
     }
     stringVA.Average(stringVAs)
@@ -162,7 +213,7 @@ class MessageController extends Controller {
       //Query tabel punctuationdictionary with punct
       DB.withConnection{ conn =>
       val stmt = conn.createStatement
-        val rs = stmt.executeQuery("SELECT * FROM punctuation WHERE (Word = '" + punct + "')")
+        val rs = stmt.executeQuery("SELECT * FROM punctuation WHERE Word = '" + punct + "'")
 
         //Test if it's a ANEW word...
          while(rs.next()){
@@ -179,7 +230,6 @@ class MessageController extends Controller {
 
             //add the vector to the list of vectors
             punctVAs = VA :: punctVAs
-          
         }
       }
     }
@@ -193,7 +243,7 @@ class MessageController extends Controller {
       //Query tabel emojidictionary with emoji
       DB.withConnection{ conn =>
       val stmt = conn.createStatement
-        val rs = stmt.executeQuery("SELECT * FROM emoji WHERE (Word = '" + emoji + "')")
+        val rs = stmt.executeQuery("SELECT * FROM emoji WHERE Word = '" + emoji + "'")
 
         //Test if it's a ANEW word...
          while(rs.next()){
@@ -210,7 +260,6 @@ class MessageController extends Controller {
 
             //add the vector to the list of vectors
             emojiVAs = VA :: emojiVAs
-          
         }
       }
     }
@@ -219,16 +268,15 @@ class MessageController extends Controller {
       containsEmoji = true
     }
 
-
     count = 0
     for (emoticon <- emoticonList){
       //Query tabel emoticondictionary with emoticon
       var id = emoticon.substring(1, emoticon.length)
       Logger.debug(id)
       DB.withConnection{ conn =>
-      val stmt = conn.createStatement
-        val rs = stmt.executeQuery("SELECT * FROM textualemoticon WHERE (Word = '" + emoticon + "')")
-
+        val stmt = conn.createStatement
+        val rs = stmt.executeQuery("SELECT * FROM textualemoticon WHERE Word = '" + emoticon + "'")
+  
         //Test if it's a ANEW word...
         while(rs.next()){
           count += 1
@@ -236,15 +284,14 @@ class MessageController extends Controller {
             var vStd = rs.getDouble("VSTD")
             var aMean = rs.getDouble("AMean")
             var aStd = rs.getDouble("ASTD")
-
+  
             //temporary
             var v = vMean * (1.0/vStd)
             var a = aMean * (1.0/aStd)
             var VA = new VAVector(v, a)
-
+  
             //add the vector to the list of vectors
             emoticonVAs = VA :: emoticonVAs
-          
         }
       }
     }
@@ -278,11 +325,10 @@ class MessageController extends Controller {
     if(containsPunct){ messageVAs = punctVA :: messageVAs}
     if(containsEmoji){ messageVAs = emojiVA :: messageVAs}
     if(containsEmoticon){ messageVAs = emoticonVA :: messageVAs}
-    Logger.debug(messageVAs.toString())
 
     //Get result vector
     messageVA.Average(messageVAs)
-    Logger.debug(messageVA.toString())
+    messageVA
   }
 }
 
@@ -323,4 +369,9 @@ class VAVector(valence: Double, arousal: Double){
   }
 
   override def toString(): String = "Valence: " + v + ", Arousal: " + a;
+}
+
+class Song(artist : String, song: String, valence: Double, arousal: Double){
+    def distance(v : Double, a: Double): Double =  math.abs(arousal - a) + math.abs(valence - v)
+    override def toString(): String = artist + " " + song
 }
