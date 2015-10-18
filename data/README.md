@@ -39,6 +39,19 @@ CREATE TABLE `magicalmusic`.`music` (
 ```
 ```
 
+CREATE TABLE `magicalmusic`.`musicLyrics` (
+  `id` INT NOT NULL AUTO_INCREMENT COMMENT '',
+  `msdid` VARCHAR(30) NOT NULL COMMENT '',
+  `artist` VARCHAR(45) NOT NULL COMMENT '',
+  `song` VARCHAR(45) NOT NULL COMMENT '',
+  `valenceAudio` DOUBLE NOT NULL COMMENT '',
+  `arousalAudio` DOUBLE NOT NULL COMMENT '',
+  `valenceLyrics` DOUBLE NULL COMMENT '',
+  `arousalLyrics` DOUBLE NULL COMMENT '',
+  PRIMARY KEY (`id`)  COMMENT '');
+
+
+
 CREATE TABLE `emoji` (
   `ID` int(11) DEFAULT NULL,
   `VMean` text,
