@@ -1,5 +1,4 @@
-//  package controllers
-
+import java.sql.{Connection, DriverManager, ResultSet};
 // import play.api.mvc.{Action, Controller}
 // import play.api.libs.json.Json
 // import play.api.Routes
@@ -8,13 +7,43 @@
 // import play.api.db._
 // import play.api.Play.current
 // import java.io.IOException
- 
 
-  object HelloWorld {
-    def main(args: Array[String]) {
-      println("Hello, world!")
+
+// Change to Your Database Config
+val conn_str = "jdbc:mysql://localhost:3306/magicalmusic?user=root&password=root"
+val mysql = "mysql" % "mysql-connector-java" % "5.1.12"
+// Load the driver
+classOf[com.mysql.jdbc.Driver]
+
+// Setup the connection
+val conn = DriverManager.getConnection(conn_str)
+try {
+    // Configure to be Read Only
+    val statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)
+
+    // Execute Query
+    val rs = statement.executeQuery("SELECT * FROM textdictionary WHERE Word = 'aardvark' LIMIT 5")
+
+    // Iterate Over ResultSet
+    while (rs.next) {
+        println(rs.getString("Word"))
     }
-  }
+}
+finally {
+    conn.close
+}
+
+// val url = "jdbc:mysql://localhost:3306/magicalmusic"
+// val driver = "com.mysql.jdbc.Driver"
+// val username = "root"
+// val password = "root"
+// Class.forName(driver)
+// var connection:Connection = DriverManager.getConnection(url, username, password)
+// val statement = connection.createStatement
+// val rs = statement.executeQuery("INSERT INTO musiclyrics (id,msdid,artist,song,valenceAudio,arousalAudio,valenceLyrics,arousalLyrics) VALUES (1,sadasa,daad,sdaasd,1.1,1.2,1.3,1.4);")
+   
+
+
 
   //  var tokens = message.split("\\s+")
 

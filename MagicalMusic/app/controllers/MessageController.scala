@@ -76,8 +76,8 @@ class MessageController extends Controller {
             var artist = rs.getString("artist")
             var tempArousal = rs.getDouble("arousal")
             var tempValence = rs.getDouble("valence")
-            Logger.debug("song = " + song + " from " + artist + "   with valence and arousal " + tempValence + ", " + tempArousal
-                + " with distance " + math.abs(arousal - tempArousal) + math.abs(valence - tempValence))
+            // Logger.debug("song = " + song + " from " + artist + "   with valence and arousal " + tempValence + ", " + tempArousal
+            //     + " with distance " + math.abs(arousal - tempArousal) + math.abs(valence - tempValence))
             songs = new Song(artist, song, tempValence, tempArousal) :: songs
         }
     }
@@ -195,7 +195,7 @@ class MessageController extends Controller {
           var v = vMean * (1.0/vStd)
           var a = aMean * (1.0/aStd)
           var VA = new VAVector(v, a)
-          Logger.debug(VA.toString())
+          // Logger.debug(VA.toString())
 
           //add the vector to the list of vectors
           stringVAs = VA :: stringVAs
@@ -208,42 +208,44 @@ class MessageController extends Controller {
       containsString = true
     }
 
-    count = 0
-    for (punct <- punctList){
-      //Query tabel punctuationdictionary with punct
-      DB.withConnection{ conn =>
-      val stmt = conn.createStatement
-        val rs = stmt.executeQuery("SELECT * FROM punctuation WHERE Word = '" + punct + "'")
+    // count = 0
+    // for (punct <- punctList){
+    //   //Query tabel punctuationdictionary with punct
+    //   DB.withConnection{ conn =>
+    //   val stmt = conn.createStatement
+    //     val rs = stmt.executeQuery("SELECT * FROM punctuation WHERE Word = '" + punct + "'")
 
-        //Test if it's a ANEW word...
-         while(rs.next()){
-          count += 1
-            var vMean = rs.getDouble("VMean")
-            var vStd = rs.getDouble("VSTD")
-            var aMean = rs.getDouble("AMean")
-            var aStd = rs.getDouble("ASTD")
+    //     //Test if it's a ANEW word...
+    //      while(rs.next()){
+    //       count += 1
+    //         var vMean = rs.getDouble("VMean")
+    //         var vStd = rs.getDouble("VSTD")
+    //         var aMean = rs.getDouble("AMean")
+    //         var aStd = rs.getDouble("ASTD")
 
-            //temporary
-            var v = vMean * (1.0/vStd)
-            var a = aMean * (1.0/aStd)
-            var VA = new VAVector(v, a)
+    //         //temporary
+    //         var v = vMean * (1.0/vStd)
+    //         var a = aMean * (1.0/aStd)
+    //         var VA = new VAVector(v, a)
 
-            //add the vector to the list of vectors
-            punctVAs = VA :: punctVAs
-        }
-      }
-    }
-    punctVA.Average(punctVAs)
-    if (count >= punctMinAmount){
-      containsPunct = true
-    }
+    //         //add the vector to the list of vectors
+    //         punctVAs = VA :: punctVAs
+    //     }
+    //   }
+    // }
+    // punctVA.Average(punctVAs)
+    // if (count >= punctMinAmount){
+    //   containsPunct = true
+    // }
 
     count = 0
     for (emoji <- emojiList){
       //Query tabel emojidictionary with emoji
       DB.withConnection{ conn =>
       val stmt = conn.createStatement
-        val rs = stmt.executeQuery("SELECT * FROM emoji WHERE Word = '" + emoji + "'")
+        var queryString = "SELECT * FROM emoji WHERE ID = " + emoji.stripPrefix("%")
+        Logger.debug(queryString)
+        val rs = stmt.executeQuery(queryString)
 
         //Test if it's a ANEW word...
          while(rs.next()){
@@ -264,41 +266,42 @@ class MessageController extends Controller {
       }
     }
     emojiVA.Average(emojiVAs)
+    Logger.debug(emojiVA.toString())
     if (count >= emojiMinAmount){
       containsEmoji = true
     }
 
-    count = 0
-    for (emoticon <- emoticonList){
-      //Query tabel emoticondictionary with emoticon
-      var id = emoticon.substring(1, emoticon.length)
-      Logger.debug(id)
-      DB.withConnection{ conn =>
-        val stmt = conn.createStatement
-        val rs = stmt.executeQuery("SELECT * FROM textualemoticon WHERE Word = '" + emoticon + "'")
+    // count = 0
+    // for (emoticon <- emoticonList){
+    //   //Query tabel emoticondictionary with emoticon
+    //   var id = emoticon.substring(1, emoticon.length)
+    //   Logger.debug(id)
+    //   DB.withConnection{ conn =>
+    //     val stmt = conn.createStatement
+    //     val rs = stmt.executeQuery("SELECT * FROM textualemoticon WHERE Word = '" + emoticon + "'")
   
-        //Test if it's a ANEW word...
-        while(rs.next()){
-          count += 1
-            var vMean = rs.getDouble("VMean")
-            var vStd = rs.getDouble("VSTD")
-            var aMean = rs.getDouble("AMean")
-            var aStd = rs.getDouble("ASTD")
+    //     //Test if it's a ANEW word...
+    //     while(rs.next()){
+    //       count += 1
+    //         var vMean = rs.getDouble("VMean")
+    //         var vStd = rs.getDouble("VSTD")
+    //         var aMean = rs.getDouble("AMean")
+    //         var aStd = rs.getDouble("ASTD")
   
-            //temporary
-            var v = vMean * (1.0/vStd)
-            var a = aMean * (1.0/aStd)
-            var VA = new VAVector(v, a)
+    //         //temporary
+    //         var v = vMean * (1.0/vStd)
+    //         var a = aMean * (1.0/aStd)
+    //         var VA = new VAVector(v, a)
   
-            //add the vector to the list of vectors
-            emoticonVAs = VA :: emoticonVAs
-        }
-      }
-    }
-    emoticonVA.Average(emoticonVAs)
-    if (count >= emoticonMinAmount){
-      containsEmoticon = true
-    }
+    //         //add the vector to the list of vectors
+    //         emoticonVAs = VA :: emoticonVAs
+    //     }
+    //   }
+    // }
+    // emoticonVA.Average(emoticonVAs)
+    // if (count >= emoticonMinAmount){
+    //   containsEmoticon = true
+    // }
 
     //---------------------------Calculate Message Vector-------------------------------
     //Scale vectors with settings
