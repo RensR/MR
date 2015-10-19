@@ -1,0 +1,4 @@
+C:\Users\Daphne\Documents\Visual Studio 2010\Projects\Unstemmer\Unstemmer\bin\Debug\Unstemmer.exe
+C:\Users\Daphne\Documents\Visual Studio 2010\Projects\Unstemmer\Unstemmer\bin\Debug\Unstemmer.pdb
+C:\Users\Daphne\Documents\Visual Studio 2010\Projects\Unstemmer\Unstemmer\obj\x86\Debug\Unstemmer.exe
+C:\Users\Daphne\Documents\Visual Studio 2010\Projects\Unstemmer\Unstemmer\obj\x86\Debug\Unstemmer.pdb
