@@ -244,12 +244,12 @@ class MessageController extends Controller {
         }
       }
     }
-    stringVA.Average(stringVAs)
-    stringVA.v = stringVA.v * (vStdSum / count)
-    stringVA.a = stringVA.a * (aStdSum / count)
-
-    Logger.debug("StringVA: " + stringVA.toString() + "\n")
     if (count >= stringMinAmount){
+      stringVA.Average(stringVAs)
+      stringVA.v = stringVA.v * (vStdSum / count)
+      stringVA.a = stringVA.a * (aStdSum / count)
+
+      Logger.debug("StringVA: " + stringVA.toString() + "\n")
       containsString = true
     }
 
@@ -257,6 +257,9 @@ class MessageController extends Controller {
     var vStd = 0.0
     var aMean = 0.0
     var aStd = 0.0
+
+    aStdSum = 0.0
+    vStdSum = 0.0
 
     count = 0
     for (punct <- punctList){
@@ -284,18 +287,20 @@ class MessageController extends Controller {
         var a = aMean * (1.0/aStd)
         var VA = new VAVector(v, a)
 
+        Logger.debug("punct = " + punct)
+        Logger.debug(VA.toString())
+
         //add the vector to the list of vectors
         punctVAs = VA :: punctVAs
       }
         
     }
-    punctVA.Average(punctVAs)
-    punctVA.v = punctVA.v * (vStdSum / count)
-    punctVA.a = punctVA.a * (aStdSum / count)
-
-    Logger.debug("punctVA: " + punctVA.toString() + "\n")
-
     if (count >= punctMinAmount){
+      punctVA.Average(punctVAs)
+      punctVA.v = punctVA.v * (vStdSum / count)
+      punctVA.a = punctVA.a * (aStdSum / count)
+
+      Logger.debug("punctVA: " + punctVA.toString() + "\n")
       containsPunct = true
     }
 
@@ -331,46 +336,14 @@ class MessageController extends Controller {
         }
       }
     }
-    emojiVA.Average(emojiVAs)
-    emojiVA.v = emojiVA.v * (vStdSum / count)
-    emojiVA.a = emojiVA.a * (aStdSum / count)
-    
-    Logger.debug("EmojiVA: " + emojiVA.toString() + "\n")
     if (count >= emojiMinAmount){
+      emojiVA.Average(emojiVAs)
+      emojiVA.v = emojiVA.v * (vStdSum / count)
+      emojiVA.a = emojiVA.a * (aStdSum / count)
+      
+      Logger.debug("EmojiVA: " + emojiVA.toString() + "\n")
       containsEmoji = true
     }
-
-    // count = 0
-    // for (emoticon <- emoticonList){
-    //   //Query tabel emoticondictionary with emoticon
-    //   var id = emoticon.substring(1, emoticon.length)
-    //   Logger.debug(id)
-    //   DB.withConnection{ conn =>
-    //     val stmt = conn.createStatement
-    //     val rs = stmt.executeQuery("SELECT * FROM textualemoticon WHERE Word = '" + emoticon + "'")
-  
-    //     //Test if it's a ANEW word...
-    //     while(rs.next()){
-    //       count += 1
-    //         var vMean = rs.getDouble("VMean")
-    //         var vStd = rs.getDouble("VSTD")
-    //         var aMean = rs.getDouble("AMean")
-    //         var aStd = rs.getDouble("ASTD")
-  
-    //         //temporary
-    //         var v = vMean * (1.0/vStd)
-    //         var a = aMean * (1.0/aStd)
-    //         var VA = new VAVector(v, a)
-  
-    //         //add the vector to the list of vectors
-    //         emoticonVAs = VA :: emoticonVAs
-    //     }
-    //   }
-    // }
-    // emoticonVA.Average(emoticonVAs)
-    // if (count >= emoticonMinAmount){
-    //   containsEmoticon = true
-    // }
 
     //---------------------------Calculate Message Vector-------------------------------
     //Scale vectors with settings
