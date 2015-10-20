@@ -18,6 +18,26 @@ USE `magicalmusic`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `musiclyrics`
+--
+
+DROP TABLE IF EXISTS `musiclyrics`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `musiclyrics` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `msdid` varchar(30) NOT NULL,
+  `artist` varchar(45) NOT NULL,
+  `song` varchar(45) NOT NULL,
+  `valenceAudio` double NOT NULL,
+  `arousalAudio` double NOT NULL,
+  `valenceLyrics` double DEFAULT NULL,
+  `arousalLyrics` double DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13917 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `musiclyrics`
 --
 
@@ -36,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-10-20 11:23:53
+-- Dump completed on 2015-10-20 12:51:25
