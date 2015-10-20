@@ -41,6 +41,14 @@ class MessageController extends Controller {
   def getSongID(vvalence : Double, varousal : Double): String = {
     var valence = 0.2
     var arousal = 0.2
+    var tempValence = 0.0
+    var tempArousal = 0.0
+
+    //Used for scaling the values
+    var audioWeight = 5
+    var lyricsWeight = 3
+    var containsLyrics = false
+
     if (!vvalence.isNaN) {
         valence = vvalence
     }
@@ -51,18 +59,18 @@ class MessageController extends Controller {
     var songs = List[Song]()
     DB.withConnection{ conn =>
         val stmt = conn.createStatement
-        val rs = stmt.executeQuery("""SELECT song, artist, arousal, valence FROM 
-            ( ( SELECT song, artist, arousal, valence, """ + valence + """-valence AS diff
-                FROM music
-                WHERE valence < """ + valence + """
-                ORDER BY valence DESC
+        val rs = stmt.executeQuery("""SELECT song, artist, valenceAudio, arousalAudio, valenceLyrics, arousalLyrics FROM 
+            ( ( SELECT song, artist, valenceAudio, arousalAudio, valenceLyrics, arousalLyrics, """ + valence + """-valenceAudio AS diff
+                FROM musiclyrics
+                WHERE valenceAudio < """ + valence + """
+                ORDER BY valenceAudio DESC
                   LIMIT 20
               ) 
               UNION ALL
-              ( SELECT song, artist, arousal, valence, valence-""" + valence + """ AS diff
-                FROM music
-                WHERE valence >= """ + valence + """
-                ORDER BY valence ASC
+              ( SELECT song, artist, valenceAudio, arousalAudio, valenceLyrics, arousalLyrics, valenceAudio-""" + valence + """ AS diff
+                FROM musiclyrics
+                WHERE valenceAudio >= """ + valence + """
+                ORDER BY valenceAudio ASC
                   LIMIT 20
               ) 
             ) AS tmp
@@ -74,10 +82,30 @@ class MessageController extends Controller {
         while(rs.next()){
             var song = rs.getString("song")
             var artist = rs.getString("artist")
-            var tempArousal = rs.getDouble("arousal")
-            var tempValence = rs.getDouble("valence")
-            // Logger.debug("song = " + song + " from " + artist + "   with valence and arousal " + tempValence + ", " + tempArousal
-            //     + " with distance " + math.abs(arousal - tempArousal) + math.abs(valence - tempValence))
+            var tempArousalAudio = rs.getDouble("arousalAudio")
+            var tempValenceAudio = rs.getDouble("valenceAudio")
+            var tempArousalLyrics = rs.getDouble("arousalLyrics")
+            var tempValenceLyrics = rs.getDouble("valenceLyrics")
+
+            if (tempValenceLyrics > 0 || tempArousalLyrics > 0)
+              containsLyrics = true
+
+            //Convert with weights
+            if (containsLyrics){
+              tempValence = (audioWeight * tempValenceAudio + lyricsWeight * tempValenceLyrics) / 2
+              tempArousal = (audioWeight * tempArousalAudio + lyricsWeight * tempArousalLyrics) / 2
+            }
+            else {
+              tempValence = tempValenceAudio
+              tempArousal = tempArousalAudio
+            }
+
+            containsLyrics = false
+
+            Logger.debug("song = " + song + " from " + artist + "   with valence and arousal " + tempValence + ", " + tempArousal
+                + " with distance " + math.abs(arousal - tempArousal) + math.abs(valence - tempValence))
+
+
             songs = new Song(artist, song, tempValence, tempArousal) :: songs
         }
     }
@@ -177,6 +205,9 @@ class MessageController extends Controller {
     //-------------------------------Dictionary Lookup---------------------------------
 
     var count = 0
+    var aStdSum = 0.0
+    var vStdSum = 0.0
+
     for (string <- stringList){
       Logger.debug("String = " + string)
       //Query tabel sentimentdictionary with string
@@ -190,6 +221,8 @@ class MessageController extends Controller {
           var vStd = rs.getDouble("VSTD")
           var aMean = rs.getDouble("AMean")
           var aStd = rs.getDouble("ASTD")
+          vStdSum += vStd
+          aStdSum += aStd
 
           //temporary
           var v = vMean * (1.0/vStd)
@@ -203,7 +236,10 @@ class MessageController extends Controller {
       }
     }
     stringVA.Average(stringVAs)
-    Logger.debug(stringVA.toString())
+    stringVA.v = stringVA.v * (vStdSum / count)
+    stringVA.a = stringVA.a * (aStdSum / count)
+
+    Logger.debug("StringVA: " + stringVA.toString() + "\n")
     if (count >= stringMinAmount){
       containsString = true
     }
@@ -238,13 +274,16 @@ class MessageController extends Controller {
     //   containsPunct = true
     // }
 
-    count = 0
+    count = 0 
+    aStdSum = 0.0
+    vStdSum = 0.0
+
     for (emoji <- emojiList){
       //Query tabel emojidictionary with emoji
       DB.withConnection{ conn =>
       val stmt = conn.createStatement
         var queryString = "SELECT * FROM emoji WHERE ID = " + emoji.stripPrefix("%")
-        Logger.debug(queryString)
+        Logger.debug("Emoji = " + emoji)
         val rs = stmt.executeQuery(queryString)
 
         //Test if it's a ANEW word...
@@ -254,10 +293,12 @@ class MessageController extends Controller {
             var vStd = rs.getDouble("VSTD")
             var aMean = rs.getDouble("AMean")
             var aStd = rs.getDouble("ASTD")
+            vStdSum += vStd
+            aStdSum += aStd
 
             //temporary
-            var v = vMean * (1.0/vStd)
-            var a = aMean * (1.0/aStd)
+            var v = (vMean + 2) * (1.0/vStd)
+            var a = (aMean + 2) * (1.0/aStd)
             var VA = new VAVector(v, a)
 
             //add the vector to the list of vectors
@@ -266,7 +307,10 @@ class MessageController extends Controller {
       }
     }
     emojiVA.Average(emojiVAs)
-    Logger.debug(emojiVA.toString())
+    emojiVA.v = emojiVA.v * (vStdSum / count)
+    emojiVA.a = emojiVA.a * (aStdSum / count)
+    
+    Logger.debug("EmojiVA: " + emojiVA.toString() + "\n")
     if (count >= emojiMinAmount){
       containsEmoji = true
     }
@@ -330,7 +374,8 @@ class MessageController extends Controller {
     if(containsEmoticon){ messageVAs = emoticonVA :: messageVAs}
 
     //Get result vector
-    messageVA.Average(messageVAs)
+    messageVA.Sum(messageVAs)
+    Logger.debug("ResultingVA: " + messageVA.toString() + "\n")
     messageVA
   }
 }
@@ -363,6 +408,18 @@ class VAVector(valence: Double, arousal: Double){
     }
     v = vSum / count
     a = aSum / count
+  }
+
+  def Sum(vectors: List[VAVector]){
+    var vSum = 0.0
+    var aSum = 0.0
+
+    for (vector <- vectors){
+      vSum += vector.v
+      aSum += vector.a
+    }
+    v = vSum
+    a = aSum
   }
 
 //calculate the Minkowski distance
