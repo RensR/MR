@@ -27,10 +27,16 @@ class MessageController extends Controller {
     var query = computeTokens(message)
     Logger.debug("Query = " + query.toString())
 
-    var songID = getSongID(query.v, query.a)
-    Logger.debug("Song found!  " + songID)
-    var youtube = new helpers.Search()
-    var id = youtube.getVideoIDFromQuery(songID)
+    var id = "No result."
+    var i = 0;
+    var songIDs = getSongID(query.v, query.a)
+    while (id == "No result." && i < songIDs.length){
+      Logger.debug("Song found!  " + songIDs(i).toString())
+      var youtube = new helpers.Search()
+      id = youtube.getVideoIDFromQuery(songIDs(i).toString())
+      Logger.debug(songIDs(i).totalString())
+      i += 1
+    }
     Ok(Json.toJson((Message(id))))
   }
 
@@ -38,7 +44,7 @@ class MessageController extends Controller {
     Ok(Routes.javascriptRouter("jsRoutes")(routes.javascript.MessageController.getSong)).as(JAVASCRIPT)
   }
 
-  def getSongID(vvalence : Double, varousal : Double): String = {
+  def getSongID(vvalence : Double, varousal : Double): List[Song] = {
     var valence = 0.2
     var arousal = 0.2
     var tempValence = 0.0
@@ -64,18 +70,18 @@ class MessageController extends Controller {
                 FROM musiclyrics
                 WHERE valenceAudio < """ + valence + """
                 ORDER BY valenceAudio DESC
-                  LIMIT 20
+                  LIMIT 200
               ) 
               UNION ALL
               ( SELECT song, artist, valenceAudio, arousalAudio, valenceLyrics, arousalLyrics, valenceAudio-""" + valence + """ AS diff
                 FROM musiclyrics
                 WHERE valenceAudio >= """ + valence + """
                 ORDER BY valenceAudio ASC
-                  LIMIT 20
+                  LIMIT 200
               ) 
             ) AS tmp
             ORDER BY diff
-            LIMIT 20 ;""".replaceAll("\n", " "))
+            LIMIT 200 ;""".replaceAll("\n", " "))
 
 
 
@@ -92,6 +98,9 @@ class MessageController extends Controller {
 
             //Convert with weights
             if (containsLyrics){
+              tempValenceLyrics = (tempValenceLyrics - 1.9) * 5.3
+              tempArousalLyrics = (tempArousalLyrics - 1.3) * 2.0
+
               tempValence = (audioWeight * tempValenceAudio + lyricsWeight * tempValenceLyrics) / 2
               tempArousal = (audioWeight * tempArousalAudio + lyricsWeight * tempArousalLyrics) / 2
             }
@@ -102,15 +111,15 @@ class MessageController extends Controller {
 
             containsLyrics = false
 
-            Logger.debug("song = " + song + " from " + artist + "   with valence and arousal " + tempValence + ", " + tempArousal
-                + " with distance " + math.abs(arousal - tempArousal) + math.abs(valence - tempValence))
+            // Logger.debug("song = " + song + " from " + artist + "   with valence and arousal " + tempValence + ", " + tempArousal
+            //     + " with distance " + math.abs(arousal - tempArousal) + math.abs(valence - tempValence))
 
 
             songs = new Song(artist, song, tempValence, tempArousal) :: songs
         }
     }
     // Sorts the songs by distance and return the best one
-    songs.sortWith(_.distance(valence, arousal) < _.distance(valence, arousal))(0).toString()
+    songs.sortWith(_.distance(valence, arousal) < _.distance(valence, arousal))
   }
 
 
@@ -297,8 +306,8 @@ class MessageController extends Controller {
             aStdSum += aStd
 
             //temporary
-            var v = (vMean + 2) * (1.0/vStd)
-            var a = (aMean + 2) * (1.0/aStd)
+            var v = vMean * (1.0/vStd)
+            var a = aMean * (1.0/aStd)
             var VA = new VAVector(v, a)
 
             //add the vector to the list of vectors
@@ -360,6 +369,13 @@ class MessageController extends Controller {
     if(!containsEmoticon){ emoticonScaler = 0}
 
     var totalScaler = stringScaler + punctScaler + emojiScaler + emoticonScaler
+
+    emojiVA.v = (emojiVA.v + 2) / 4
+    emojiVA.a = (emojiVA.a + 1.6) / 2.9
+
+    stringVA.v = (stringVA.v - 1.2) / 7.3
+    stringVA.a = (stringVA.a - 1.6) / 6.2
+
 
     stringVA.Multiply(stringScaler / totalScaler)
     punctVA.Multiply(punctScaler / totalScaler)
@@ -434,4 +450,5 @@ class VAVector(valence: Double, arousal: Double){
 class Song(artist : String, song: String, valence: Double, arousal: Double){
     def distance(v : Double, a: Double): Double =  math.abs(arousal - a) + math.abs(valence - v)
     override def toString(): String = artist + " " + song
+    def totalString(): String = artist + " " + song + " " + valence + " " + arousal
 }
