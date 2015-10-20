@@ -218,11 +218,11 @@ class MessageController extends Controller {
     var vStdSum = 0.0
 
     for (string <- stringList){
-      Logger.debug("String = " + string)
+      Logger.debug("String = " + string.toLowerCase())
       //Query tabel sentimentdictionary with string
       DB.withConnection{ conn =>
       val stmt = conn.createStatement
-        val rs = stmt.executeQuery("SELECT * FROM textdictionary WHERE Word = '" + string + "'")
+        val rs = stmt.executeQuery("SELECT * FROM textdictionary WHERE Word = '" + string.toLowerCase() + "'")
         // Test if it's a ANEW word...
         while(rs.next()){
           count += 1
@@ -253,35 +253,51 @@ class MessageController extends Controller {
       containsString = true
     }
 
-    // count = 0
-    // for (punct <- punctList){
-    //   //Query tabel punctuationdictionary with punct
-    //   DB.withConnection{ conn =>
-    //   val stmt = conn.createStatement
-    //     val rs = stmt.executeQuery("SELECT * FROM punctuation WHERE Word = '" + punct + "'")
+    var vMean = 0.0
+    var vStd = 0.0
+    var aMean = 0.0
+    var aStd = 0.0
 
-    //     //Test if it's a ANEW word...
-    //      while(rs.next()){
-    //       count += 1
-    //         var vMean = rs.getDouble("VMean")
-    //         var vStd = rs.getDouble("VSTD")
-    //         var aMean = rs.getDouble("AMean")
-    //         var aStd = rs.getDouble("ASTD")
+    count = 0
+    for (punct <- punctList){
+      //Query tabel punctuationdictionary with punct
+      
+      if (punct == "!" || punct == "?"){
+        if (punct == "!"){
+          vMean = 0.64583
+          vStd = 0.93992 
+          aMean = 0.84659
+          aStd = 0.81486
+        }
+        else if (punct == "?"){
+          vMean = -0.1458
+          vStd = 0.54628
+          aMean = -0.7457
+          aStd = 0.69793
+        }
+        count += 1
+        vStdSum += vStd
+        aStdSum += aStd
 
-    //         //temporary
-    //         var v = vMean * (1.0/vStd)
-    //         var a = aMean * (1.0/aStd)
-    //         var VA = new VAVector(v, a)
+        //temporary
+        var v = vMean * (1.0/vStd)
+        var a = aMean * (1.0/aStd)
+        var VA = new VAVector(v, a)
 
-    //         //add the vector to the list of vectors
-    //         punctVAs = VA :: punctVAs
-    //     }
-    //   }
-    // }
-    // punctVA.Average(punctVAs)
-    // if (count >= punctMinAmount){
-    //   containsPunct = true
-    // }
+        //add the vector to the list of vectors
+        punctVAs = VA :: punctVAs
+      }
+        
+    }
+    punctVA.Average(punctVAs)
+    punctVA.v = punctVA.v * (vStdSum / count)
+    punctVA.a = punctVA.a * (aStdSum / count)
+
+    Logger.debug("punctVA: " + punctVA.toString() + "\n")
+
+    if (count >= punctMinAmount){
+      containsPunct = true
+    }
 
     count = 0 
     aStdSum = 0.0
@@ -370,12 +386,14 @@ class MessageController extends Controller {
 
     var totalScaler = stringScaler + punctScaler + emojiScaler + emoticonScaler
 
-    emojiVA.v = (emojiVA.v + 2) / 4
+    emojiVA.v = (emojiVA.v + 2.0) / 4.0
     emojiVA.a = (emojiVA.a + 1.6) / 2.9
 
     stringVA.v = (stringVA.v - 1.2) / 7.3
     stringVA.a = (stringVA.a - 1.6) / 6.2
 
+    punctVA.v = (punctVA.v + 2.0) / 4.0
+    punctVA.a = (punctVA.a + 2.0) / 4.0
 
     stringVA.Multiply(stringScaler / totalScaler)
     punctVA.Multiply(punctScaler / totalScaler)
