@@ -83,7 +83,7 @@
 
 % Some very useful LaTeX packages include:
 % (uncomment the ones you want to load)
-
+\usepackage{graphicx}
 
 
 % *** MISC UTILITY PACKAGES ***
@@ -551,7 +551,7 @@ pdfkeywords={Computing science, sentiment analysis, music recommendation, paper}
 % journal papers have the author affiliations above the "Manuscript
 % received ..."  text while in non-compsoc journals this is reversed. Sigh.
 
-\author{Daphne, Rens, Everton, Armen, Jesse}% <-this % stops a space
+\author{Armen Shamelian - 3831817, Rens Rooimans - 3862569, Jesse de Ruijter - 3837009, \\Daphne Odekerken - 3827887, Everton Souto Lima - 5595029 \\ Contact: D.Odekerken@uu.nl}% <-this % stops a space
 %\thanks{Manuscript received April 19, 2005; revised August 26, 2015.}}
 
 % note the % following the last \IEEEmembership and also \thanks - 
@@ -620,7 +620,7 @@ A Music Recommender System is introduced, founded on text-based sentiment analys
 
 % Note that keywords are not normally used for peerreview papers.
 \begin{IEEEkeywords}
-Computing science, sentiment analysis, music recommendation, paper
+Computing science, Sentiment analysis, Music recommendation, Music Emotion Recognition
 \end{IEEEkeywords}}
 
 
@@ -687,7 +687,7 @@ Computing science, sentiment analysis, music recommendation, paper
 
 For the first part of our project, we performed a survey to identify well-established techniques and the state of the art. We begin by researching ways to quantify emotion. There are different models used for identifying the specific emotional state which is closest to a song. Existing techniques on emotional analysis based on music extract properties from a song like BPM, genre and timbre [4]. After extracted from the song, these features are used to quantify the mood or emotional context. For the following part of our project we do the inverse mapping. We identify ways to connect the listener's mood to a song. In Tune into your emotions (Janssen et al. 2011) [3] it is described how biosignals are translated to emotions and music is retrieved to affect these emotions in a specific way. Our project is similar, however, our approach will be more business oriented and we will be gathering emotions in a more accessible way; from text. In this phase, we will research how accurately we can give music suggestions based on emotional analysis of text fragments.
 
-After researching these topics, we aim to produce a multimedia system that is able to identify the listener's emotions through text and map them to songs that match this mood. As suggested by Sauro \& Lewis [5], the main factor of a success for a system is if it can capture the user as the main actor.  We aim to achieve this by providing an intuitive user interface and being mindful of the user when constructing our algorithm. During this process, we found novel ways to use emoticons for this purpose. 
+After researching these topics, we aim to produce a multimedia system that is able to identify the listener's emotions through text and map them to songs that match this mood. As suggested by Sauro and Lewis [5], the main factor of a success for a system is if it can capture the user as the main actor.  We aim to achieve this by providing an intuitive user interface and also being mindful of the user when constructing our algorithm. During this process, we found novel ways to use emoticons for this purpose. 
 
 Lastly, this task presents valuable societal impact and business potential. The societal impact of recommendation systems is great for it allows for media discovery, allowing unheard artists to be heard. Additionally, with the identification of emotional content we bring a new dimension to recommendation systems in general that can better gauge the receptiveness of a user to media. This gives an opportunity to more advertisement aware platforms. Through this project, we hope to both explore the state of the art of multimedia technologies whilst also producing a robust multimedia system.
 
@@ -699,8 +699,11 @@ Lastly, this task presents valuable societal impact and business potential. The 
 \section{Survey}
 In this section, we describe the prevalent approaches in sentiment analysis. The simplest one only distinguishes positive and negative sentiments [4]. Other categorical representations are the 66 adjectives arranged in 8 groups as identified by Hevner (1936) [4]; the 146 emotional terms specific for music mood rating proposed by Zenter et al.[4]; the 5 mood clusters from labels from the All Music Guide, as used in the MIREX competition; and PASAS. [4].
 
-
-Source [4]
+\begin{figure}[h!]
+ \caption{The Valence-Arousal space, labeled by Russell's direct circular projection of adjectives. Source: [4]}
+  \centering
+    \includegraphics[width=0.5\textwidth]{"Figure1_ValenceArousal"}
+\end{figure}
 
 Another approach is to map emotions to a dimensional model. The most common dimensional model is the valence-arousal space, as proposed by Russel and Thayer [9]. It is a 2D model, with valence on the x-axis and arousal on the y-axis. Valence tells something about the positivity of an emotion, so “happy” has a high valence, but the valence of “miserable” is very low. Arousal is about the excitement that is attached to an emotion, so “alarmed” has a way higher arousal value than “tired”.
 
