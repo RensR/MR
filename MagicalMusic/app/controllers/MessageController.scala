@@ -27,10 +27,10 @@ class MessageController extends Controller {
     var query = computeTokens(message)
     Logger.debug("Query = " + query.toString())
 
-    var id = "No result."
+    var id = "No results."
     var i = 0;
     var songIDs = getSongID(query.v, query.a)
-    while (id == "No result." && i < songIDs.length){
+    while (id == "No results." && i < songIDs.length){
       Logger.debug("Song found!  " + songIDs(i).toString())
       var youtube = new helpers.Search()
       id = youtube.getVideoIDFromQuery(songIDs(i).toString())
