@@ -84,6 +84,7 @@
 % Some very useful LaTeX packages include:
 % (uncomment the ones you want to load)
 \usepackage{graphicx}
+\usepackage{hyperref}
 
 
 % *** MISC UTILITY PACKAGES ***
@@ -459,7 +460,7 @@ colorlinks=true,linkcolor={black},citecolor={black},urlcolor={black},
 pdftitle={Musical Affective Recommender System (MARS)},%<!CHANGE!
 pdfsubject={Sentiment analysis research, music recommendation system report},%<!CHANGE!
 pdfauthor={Jesse de Ruijter},%<!CHANGE!
-pdfkeywords={Computing science, sentiment analysis, music recommendation, paper}}%<^!CHANGE!
+pdfkeywords={Computing science, Music, Sentiment Analysis, Valence Arousal, Million Song Dataset, music recommendation, paper}}%<^!CHANGE!
 %\ifCLASSINFOpdf
 %\usepackage[\MYhyperrefoptions,pdftex]{hyperref}
 %\else
@@ -615,12 +616,12 @@ pdfkeywords={Computing science, sentiment analysis, music recommendation, paper}
 % in the abstract or keywords.
 \IEEEtitleabstractindextext{%
 \begin{abstract}
-A Music Recommender System is introduced, founded on text-based sentiment analysis and questionnaires to determine the affective load of music signal characteristics, and developed and validated with data from the Million Song Dataset and EchoNest public API. [Conclude with our findings].
+A Music Recommender System is introduced, founded on text-based sentiment analysis and questionnaires to determine the affective load of music signal characteristics, and developed and validated with data from the Million Song Dataset and EchoNest public API. Overall, users of the system found it matched emotions accurately.
 \end{abstract}
 
 % Note that keywords are not normally used for peerreview papers.
 \begin{IEEEkeywords}
-Computing science, Sentiment analysis, Music recommendation, Music Emotion Recognition
+Music, Sentiment Analysis, Valence Arousal, Million Song Dataset
 \end{IEEEkeywords}}
 
 
@@ -683,40 +684,72 @@ Computing science, Sentiment analysis, Music recommendation, Music Emotion Recog
 % 
 % Here we have the typical use of a "T" for an initial drop letter
 % and "HIS" in caps to complete the first word.
-\IEEEPARstart{M}{usic} preference has many dimensions, one of which is the emotional state of the listener [1]. It is difficult to imagine listening to loud, high-energy music when one wishes to remain calm or focus on a task, as suggested by J.H. Janseen et al [2]. Additionally, music can have a therapeutic effect on the listener. For instance, studies have taken this approach to use music to aid cancer patients and their families [3]. In our project, we are interested in the relationship between the listener's mood and music. We aim to identify the listener's emotional state by analyzing a text description, and then provide songs that can either match their emotional state or improve it.
+\IEEEPARstart{M}{usic} preference has many dimensions, one of which is the emotional state of the listener \cite{Zwaag}. It is difficult to imagine listening to loud, high-energy music when one wishes to remain calm or focus on a task, as suggested by J.H. Janssen et al. \cite{Janssen}. Additionally, music can have a therapeutic effect on the listener. For instance, studies have taken this approach to using music to aid cancer patients and their families \cite{Bailey}. In our project, we are interested in the relationship between the listener's mood and music. We aim to identify the listener's emotional state by analyzing a text description, and then provide songs that can either match their emotional state or improve it.
 
-For the first part of our project, we performed a survey to identify well-established techniques and the state of the art. We begin by researching ways to quantify emotion. There are different models used for identifying the specific emotional state which is closest to a song. Existing techniques on emotional analysis based on music extract properties from a song like BPM, genre and timbre [4]. After extracted from the song, these features are used to quantify the mood or emotional context. For the following part of our project we do the inverse mapping. We identify ways to connect the listener's mood to a song. In Tune into your emotions (Janssen et al. 2011) [3] it is described how biosignals are translated to emotions and music is retrieved to affect these emotions in a specific way. Our project is similar, however, our approach will be more business oriented and we will be gathering emotions in a more accessible way; from text. In this phase, we will research how accurately we can give music suggestions based on emotional analysis of text fragments.
+For the first part of our project, we performed a survey to identify well-established techniques and the state of the art. We begin by researching ways to quantify emotion. There are different models used for identifying the specific emotional state which is closest to a song. Existing techniques on emotional analysis are based on music extract properties from a song like BPM, genre and timbre \cite{Kim}. After being extracted from the song, these features are used to quantify the mood or emotional context. For the following part of our project we do the inverse mapping: we identify ways to connect the listener's mood to a song. In \emph{Tune into your emotions} (Janssen et al. 2011) \cite{Janssen} it is described how biosignals are translated to emotions and music is retrieved to affect these emotions in a specific way. Our project is similar, however, our approach will be more business oriented and we will be gathering emotions in a more accessible way; from a text. In this phase, we will research how accurately we can give music suggestions based on emotional analysis of text fragments.
 
-After researching these topics, we aim to produce a multimedia system that is able to identify the listener's emotions through text and map them to songs that match this mood. As suggested by Sauro and Lewis [5], the main factor of a success for a system is if it can capture the user as the main actor.  We aim to achieve this by providing an intuitive user interface and also being mindful of the user when constructing our algorithm. During this process, we found novel ways to use emoticons for this purpose. 
+After researching these topics, we aim to produce a multimedia system that is able to identify the listener's emotions through text and map them to songs that match this mood. As suggested by Sauro and Lewis \cite{Sauro}, the main factor of a success for a system is if it can capture the user as the main actor.  We aim to achieve this by providing an intuitive user interface and being mindful of the user when constructing our algorithm. During this process, we found novel ways to use emoticons for this purpose. 
 
-Lastly, this task presents valuable societal impact and business potential. The societal impact of recommendation systems is great for it allows for media discovery, allowing unheard artists to be heard. Additionally, with the identification of emotional content we bring a new dimension to recommendation systems in general that can better gauge the receptiveness of a user to media. This gives an opportunity to more advertisement aware platforms. Through this project, we hope to both explore the state of the art of multimedia technologies whilst also producing a robust multimedia system.
-
-
-\hfill mds
- 
-\hfill August 26, 2015
+Lastly, this task presents valuable societal impact and business potential. The societal impact of recommendation systems is great for it allows for media discovery, allowing unheard artists to be heard. Additionally, with the identification of emotional content we bring a new dimension to recommendation systems in general that can better gauge the receptiveness of a user to media. This gives an opportunity to more advertisement aware platforms. Through this project, we hope to both explore the state of the art of multimedia technologies whilst producing a robust multimedia system.
 
 \section{Survey}
-In this section, we describe the prevalent approaches in sentiment analysis. The simplest one only distinguishes positive and negative sentiments [4]. Other categorical representations are the 66 adjectives arranged in 8 groups as identified by Hevner (1936) [4]; the 146 emotional terms specific for music mood rating proposed by Zenter et al.[4]; the 5 mood clusters from labels from the All Music Guide, as used in the MIREX competition; and PASAS. [4].
-
+In this section, we describe the prevalent approaches in Music Emotion Recognition for representing emotions. We distinct categorical and dimensional models. Categorical representations are for example the 66 adjectives arranged in 8 groups as identified by Hevner \cite{Hevner}; the 146 emotional terms specific for music mood rating proposed by Zentner et al. \cite{Zentner}; the 5 mood clusters from labels from the All Music Guide, as used in the MIREX competition \cite{Hu}; and PASAS \cite{Watson}.
 \begin{figure}[h!]
- \caption{The Valence-Arousal space, labeled by Russell's direct circular projection of adjectives. Source: [4]}
-  \centering
-    \includegraphics[width=0.5\textwidth]{"Figure1_ValenceArousal"}
+	\centering
+	\includegraphics[width=0.5\textwidth]{"Figure1_ValenceArousal"}
+	\caption{The Valence-Arousal space, labeled by Russell's direct circular projection of adjectives. Source: \cite{Russel}}
+	\label{fig:va}
 \end{figure}
 
-Another approach is to map emotions to a dimensional model. The most common dimensional model is the valence-arousal space, as proposed by Russel and Thayer [9]. It is a 2D model, with valence on the x-axis and arousal on the y-axis. Valence tells something about the positivity of an emotion, so “happy” has a high valence, but the valence of “miserable” is very low. Arousal is about the excitement that is attached to an emotion, so “alarmed” has a way higher arousal value than “tired”.
+Another approach is to map emotions to a dimensional model. The most common dimensional model is the valence-arousal space, as proposed by Russell and Thayer \cite{Russel}. It is a 2D model, with valence on the x-axis and arousal on the y-axis. Valence tells something about the positivity of an emotion, so "happy" has a high valence, but the valence of "miserable" is extremely low. Arousal is about the excitement that is attached to an emotion, so "alarmed" has a way higher arousal value than “tired”.
 
-In our system, we choose the valence-arousal model. With this model, we expect to be able to suggest songs of which the emotion fits relatively well to the emotion in the text that was inputted by the user. If we would choose a categorical model, every song in a category would have the same probability of being suggested - this might give the user the impression that the music was chosen randomly and not based on his emotion. Using the dimensional valence-arousal model, we can easily compare distances between the emotion in the text and in the music, compare distances and suggest the song to which the distance is smallest.
+In our system, we choose the valence-arousal model. With this model, we expect to be able to suggest songs of which the emotion fits relatively well to the emotion in the text that was inputted by the user. If we would choose a categorical model, every song in a category would have the same probability of being suggested - this might give the user the impression that the music was chosen randomly and not based on his emotion. Using the dimensional valence-arousal model, we can easily compare distances between the emotion in the text and in the music, and suggest the song to which the distance is smallest.
 
 \section{Methods}
 
 \subsection{Text Analysis}
-The text sentiment analysis is done as follows. We map values of the text given by the user to a valence-arousal space, by a combination of four approaches: evaluating text, punctuation, textual emoticons, and emoticons. We used a dictionary that maps English words to corresponding valence-arousal values, this is the same approach used by A. B. Warriner et al [3]. This approach computes the valence-arousal by using bag-of-words model. The text’s grammar, order and context are disregarded. 
+For deciding what the sentiment of a text is, we map values of the text given by the user to a valence-arousal space. We tokenize the input and split the tokens into three groups: words, emoticons and punctuation. 
 
-Figure 2. Questionnaire.
+For the words, we used a dictionary that maps English words to corresponding valence-arousal values. We disregard the text's grammar, order and context and consider the text as a bag-of-words. This approach was described for the first time in ANEW (Bradley and Lang) \cite{Bradley}. We decided to use an updated dictionary, Warriner et al.\cite{Warriner}'s emotional ratings, which has some advantages and disadvantages. The ANEW-dictionary was created in 1999 and since language develops fast the valence and arousal values of specific words may have altered over time. The dictionary contains about 14.000 words whereas ANEW only contains roughly 1000 words. Having more words makes it more suitable for small text snippets, like tweets, as it is more likely to have matching words in the dictionary. It is a disadvantage on larger documents because it contains words with relatively neutral valence and arousal values. Because of this the longer the document the more it will go to the center of the vector space.
 
-However, we have expanded this approach to include punctuation and emoticons. This modification is done to improve the valence-arousal determination on short text. This is because sentiment analysis on short text is challenging and does not present satisfactory results or has limited categorization of emotions. As such,  the valence-arousal values for punctuation and the two kinds of emoticons were determined by the questionnaire [Fig. 2], and handed out to 50 people to fill in.  We will use certain weights for the keywords, the emoticons and the punctuation to determine the total valence/arousal values of the user given text.
+When the mean and standard deviation of both the valence and arousal are retrieved, we make a result vector of the text input with formula (\ref{eq:typev}). 
+\begin{equation}
+	v = \sum\limits_{i=1}^n\frac{v_{i,\mu}}{\sum (v_{\sigma}^{-1})v_{i,\sigma}}
+	\label{eq:typev}
+\end{equation}
+This vector is calculated by averaging the vectors of the words weighted by the reverse of the standard deviation. This way the weight of a word gets bigger if the word has the a similar vector in most contexts. The result vector gets multiplied with the average of the standard deviations of its component vectors to preserve the right length.
+
+\subsection{Emoticon Analysis}
+However, we have expanded this approach to include punctuation and emoticons. This modification is done to improve the valence-arousal determination on a short text. Sentiment analysis on short text is challenging and does not present satisfactory results or has a limited categorization of emotions. As such,  the valence-arousal values for punctuation and the two kinds of emoticons were determined by the questionnaire (figure \ref{fig:eq}), and handed out to 50 people to fill in. We created two versions of the questionnaire and both versions contained half of the 50 most used emoticons. We processed the results and created a dictionary similar to the word dictionary from the previous section (figure \ref{fig:emoji}). 
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.5\textwidth]{"EmoticonQuestionnaire"}
+	\caption{Emoticon questionnaire, with a likert-scale from 1 to 5 for both valence and arousal.}
+	\label{fig:eq}
+\end{figure}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.5\textwidth]{"Emoji"}
+	\caption{The emoticons mapped on the VA-space, with valence and arousal from -2 to 2.}
+	\label{fig:emoji}
+\end{figure}
+
+To obtain the valence and arousal of a text input with emoticons and punctuation we first retrieved the separate vectors for the text, the emoticons and the punctuation by getting the values from the dictionary and combining them with formula (\ref{eq:resultv}). After we combined these 3 vectors by scaling them with specific weights and summing them.
+\begin{equation}
+v_{r} = \frac{w_{p}v_{p} + w_{e}v_{e} + w_{t}v_{t}}{w_{p}w_{e}w_{t}}
+\label{eq:resultv}
+\end{equation}
+
+where $v = (0,0)$ and $w = 1$, when the input did not contain tokens of that type. The complete process is showed in (figure \ref{fig:ta})
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.48\textwidth]{"TextAnalysisOverview"}
+	\caption{Overview of the text analysis process.}
+	\label{fig:ta}
+\end{figure}
+
+
 
 
 % needed in second column of first page if using \IEEEpubid
@@ -724,73 +757,139 @@ However, we have expanded this approach to include punctuation and emoticons. Th
 
 \subsubsection{Audio Analysis}
 
-In order to obtain the emotion values (valence and arousal) for each song in the database, we trained a music emotion regression model. In this section, we’ll explain how this was accomplished.  Due to limited time and scope of this projected we sought pre-collected music metadata. Our requirements for this data were; a broad range of genres, audio features, and lyrics. The Million Song Dataset [4] was the best candidate and the dataset used in our system. The biggest advantage is that this dataset is the largest one that is freely available at present. It consists of a million contemporary popular music tracks, so the music would be appealing to a great audience. Moreover, each song comes with audio features and metadata.
+As a next step, we needed a database of songs, labeled with valence and arousal emotion values. In this section, we'll explain how this was accomplished.  Due to limited time and scope of this projected we sought pre-collected music metadata. Our requirements for this data were; a broad range of genres, audio features, and lyrics. The Million Song Dataset \cite{Thierry} was the best candidate and is the dataset used in our system. The biggest advantage is that this dataset is the largest one that is freely available at present. It consists of a million contemporary popular music tracks, so the music would be appealing to a great audience. Moreover, each song comes with audio features and metadata.
 
-The Million Song Dataset consists of one million audio features and metadata belonging to contemporary popular music tracks, in HDF5-format. These are provided by The Echo Nest, a music intelligence company, which was recently (March 2014) bought by Spotify. A list of all fields of files available in the dataset is listed on http://labrosa.ee.columbia.edu/millionsong/pages/field-list. There is a lot of information available for each song (all kinds of metadata, corresponding ID’s of this song in other datasets, etc), but we are mainly interested in audio features like loudness, mode and energy. Even more audio features can be obtained by using the Echo Nest API. Additionally, Echo Nest offers a psychological label; valence. Using a combination of the valence and energy features, we can easily map each song to valence-arousal space. Note however that this only takes audio the information into account and does not use other data that could be relevant for the emotion associated with a song, for example, lyrics or tags. For our project we used 4006 songs from the Million Song dataset that possess valence-arousal provided by EchoNest. You can observe the valence-arousal space of this data on figure 3.
+The Million Song Dataset consists of one million audio features and metadata belonging to contemporary popular music tracks, in HDF5-format. These are provided by The Echo Nest, a music intelligence company, which was recently (March 2014) bought by Spotify. A list of all fields of files available in the dataset is listed on \href{http://labrosa.ee.columbia.edu/millionsong/pages/field-list}{Million Song Database Files}. There is a lot of information available for each song (all kinds of metadata, corresponding ID's of this song in other datasets, etc), but we are mainly interested in audio features like loudness, mode and energy. The latter is described as "a perceptual measure of intensity and powerful activity released throughout the track". Even more audio features can be obtained by using the Echo Nest API. Additionally, Echo Nest offers a psychological label; valence. Using a combination of the valence and energy features, we can easily map each song to valence-arousal space. Note however that this only takes audio the information into account and does not use other data that could be relevant for the emotion associated with a song, for example, lyrics or tags. For our project, we used 4006 songs from the Million Song dataset that possess valence-arousal provided by EchoNest\footnote{Echo Nest gives little information about how this value is obtained. However they were able to inform us the valence values here are obtained solely by the audio processing of features such as pitch, mode and other acoustics drive features. General information about the features they provide can be obtained at \href{http://developer.echonest.com/acoustic-attributes.html}{Acoustic Attributes}}. You can observe the valence-arousal space of this data on figure \ref{fig:songva}.
 
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.5\textwidth]{"SongVA"}
+	\caption{Valence and arousal values for 4006 songs. These values were retrieved from the EchoNest.}
+	\label{fig:songva}
+\end{figure}
 
-Figure 3: Valence and arousal values for 4006 songs. These values were retrieved from the EchoNest.
+Additionally, the Million Song Dataset does not offer lyrics data. Fortunately, a connection to other datasets that do can easily be made, as the Million Song Dataset provides ID's of a song in those other datasets. Lyrics in bag-of-words format are provided by musiXmatch and are directly associated with 237.662 MSD tracks. Tags can be obtained from the Last.fm dataset - 505.216 of the songs from the Million Song Dataset have at least one tag. Audio data is not in the MSD for copyright reasons. 
 
-Additionally, the Million Song Dataset does not offer lyrics data. Fortunately, a connection to other datasets that do can easily be made, as the Million Song Dataset provides ID’s of a song in those other datasets. Lyrics in bag-of-words format are provided by musiXmatch and are directly associated with 237.662 MSD tracks. Tags can be obtained from the Last.fm dataset - 505.216 of the songs from the Million Song Dataset have at least one tag. Audio data is not in the MSD for copyright reasons. 
+Furthermore, in our Music Emotion Recognition component, we combine the emotion obtained from the audio data with the emotion obtained from the lyrics. Research by Yang et al [8] shows that this multimodal approach can greatly enhance audio-based classification algorithms: a relative improvement gain in classification accuracy of up to 21\% is observed when adding lyric features to the classification algorithm. However, the mapping here is solely to the four quadrants of valence-arousal space. In our project, we map these results to the entire valence-arousal space.
 
-Furthermore, in our Music Emotion Recognition component, we combine the emotion obtained from the audio data with the emotion obtained from the lyrics. Research by Yang et al [4] shows that this multimodal approach can greatly enhance audio-based classification algorithms: a relative improvement gain in classification accuracy of up to 21% is observed when adding lyric features to the classification algorithm. However, the mapping here is solely to the four quadrants of valence-arousal space. In our project we map these results to the entire valence-arousal space.
+There are various possibilities for doing the fusion of audio and lyrics. Yang et al. \cite{Yang} mention three multimodal fusion methods:
+\begin{itemize}
+	\item{Early-fusion-by-feature-concatenation (EFFC): combine feature vectors of audio and lyrics to a single feature vector and make a classifier from this.}
+	\item{Late-fusion-by-linear-combination (LFLC): train classifiers from audio and lyrics separately and combine their predictions afterwards in a linear way.}
+	\item{Late-fusion-by-subtask-merging (LFSM): train audio and lyrics classifiers to classify valence and arousal separately and merge the result afterwards. So the difference is that the two dimensions go separated into the merging step.}
+\end{itemize}
+\begin{table}[]
+	\centering
+	\caption{Performance comparison of a number of multimodal fusion methods for four-class emotion classification, arousal classification and valence classification. Source: \cite{Yang}}
+	\begin{tabular}{|c|p{1.5cm} p{1.5cm} p{1.2cm} p{1.3cm}|}
+		\hline
+		Methods & Number of Features & Four-Class Accuracy & Valence Arousal & Arousal Accuracy \\ \hline
+		Audio-Only & 106 & 46.63\% & 61.15\% & 78.03\% \\
+		Text-Only & 4000 & 40.01\% & 73.32\% & 61.95\% \\
+		EFCC & 4106 & 52.48\% & 70.54\% & 77.06\% \\
+		LFLC$_{0.5}$ & 106/4000 & 55.38\% & \textbf{74.83\%} & 77.88\%\\
+		LFSM & 106/4000 & \textbf{57.06\%} & 73.32\% & \textbf{78.03\%}\\ 
+		\hline
+	\end{tabular}
+	\label{tb:ya}
+\end{table}
+The researchers compared the performances of these approaches and found out that LFSM gave the best accuracy results, as can be seen in table \ref{tb:ya}. However, we see that the accuracy for valence is higher when using LFLC.
 
-There are various possibilities for doing the fusion of audio and lyrics. Yang et al. [4] mention three multimodal fusion methods:
-Early-fusion-by-feature-concatenation (EFFC): combine feature vectors of audio and lyrics to a single feature vector and make a classifier from this.
-Late-fusion-by-linear-combination (LFLC): train classifiers from audio and lyrics separately and combine their predictions afterwards in a linear way.
-Late-fusion-by-subtask-merging (LFSM): train audio and lyrics classifiers to classify valence and arousal separately and merge the result afterwards. So the difference is that the two dimensions go separated into the merging step.
+That is why we choose a combination of LFSM and LFSM in our system, which is possible as we do regression. We will calculate the valence as a linear combination of the valence from audio features and lyrics while we calculate arousal by using just the audio features:
 
-Table 4: Performance comparision of a number of multimodal fusion methods for four-class emotion classification, arousal classification and valance classification, from [8]
+\begin{equation}
+Valence_{audio, lyrics} =  Valence_{audio} + (1 - \alpha)Valence_{lyrics}
+\label{eq:valence}
+\end{equation}
+Formula (\ref{eq:valence}) shows how to determine the valence of a song, using the valence value from both audio and lyrics. $\alpha$ is a scalar value between 0 and 1.
+\begin{equation}
+Arousal_{audio, lyrics} =  Arousal_{audio}
+\label{eq:arousal}
+\end{equation}
+Formula (\ref{eq:arousal}) shows how to determine the arousal of a song, using only the arousal value from audio.
 
-The researchers compared the performances of these approaches and found out that LFSM (see table 4 for results) gave the best accuracy results, as can be seen in Table 4. However, we see that the accuracy for valence is higher when using LFLC.
+Initially, we will choose $0.5$ as value for $\alpha$. In the experiments, we will experiment with other values as well.
 
-That is why we choose a combination of LFSM and LFSM in our system, which is possible as we do regression. We will calculate the valence as a linear combination of the valence from audio features and lyrics, while we calculate arousal by using just the audio features:
-
-Valence(audio, lyrics) =  Valence(audio) + (1-)   Valence(lyrics)
-Equation 1: Formula for determing valence of a song, using the valence value from both audio and lyrics.  is a scalar value between 0 and 1.
-
-Arousal(audio, lyrics) = Arousal(audio)
-Equation 2: Formula for determinging arousal of a song, using only the arousal value from audio.
-
-Initially, we will choose 0.5 as value for . In the experiments, we will also experiment with other values.
 
 \subsection{Emotion from lyrics}
-	As explained previously, the lyrics we retrieve from musiXmatch are in the bag-of-words model. This limits our possibilities for the lyric emotion detection algorithm a little, as we can only use unigrams. Our plan is to adapt the sentiment analysis algorithm we already created for the user input to lyrics. There are some differences: we do not interpret emoticons and interpunction in lyrics, as these do not occur in this domain. Also, we can omit the step of converting the text to the bag-of-words model, because the lyrics are already in this format. The motivation behind our approach is that in this manner we can best match the user's mood during sentiment analysis.
+	As explained previously, the lyrics we retrieved from musiXmatch will be considered as a bag-of-words. This limited our possibilities for the lyric emotion detection algorithm a little, as we could only use unigrams. We adapted the sentiment analysis algorithm we already created for the user input to lyrics. There are some differences: we do not interpret emoticons and interpunction in lyrics, as these do not occur in this domain. Also, we omitted the step of converting the text to the bag-of-words model, because the lyrics are already in this format. The motivation behind our approach is that in this manner we can best match the user's mood during sentiment analysis.
 	
 	\subsection{Reverse engineering of audio energy and arousal}
 	The valence and arousal values we use from the audio are taken almost directly from the Echo Nest API. Unfortunately, little is provided in regards to how they obtained these values. However, we expect them to perform reasonably well (at least better than we could do in the scope of this project), but still we would like to know on which features their algorithm is based. If we know something about this, then it is easier to create our own algorithm so we would be less dependent on a company.
 	
-	That is why we extracted several audio features from the Million Song Dataset. We chose features that are relevant for Music Emotion Recognition: loudness, tempo, mode, mode confidence, key, key confidence and timbral features. The latter are MFCC-like features, which are 12-dimensional vectors with timbral information, calculated for each 30-second segment of a song. We calculate the mean and standard deviance for each element over all the segments, so we get a 24-dimensional vector for timbre of a song. Using the valence and energy labels from the Echo’s Nest as ground truth, we then trained a regressor on part of the data (the training set) and tested its accuracy on the other part (the test set).
+	That is why we extracted several audio features from the Million Song Dataset. We chose features that are relevant for Music Emotion Recognition: loudness, tempo, mode, mode confidence, key, key confidence and timbral features. The latter are MFCC-like features, which are 12-dimensional vectors with timbral information, calculated for each 30-second segment of a song. We calculate the mean and standard deviance for each element over all the segments, so we obtain a 24-dimensional vector for the timbre of a song. Using the valence and energy labels from the Echo's Nest as ground truth, we then trained a regressor on a part of the data (the training set) and tested its accuracy on the other part (the test set).
 	
-	For some songs, the mode confidence and/or key confidence is very low. In this case, we don’t want our regressor to take mode and/or key into account for that song. That is why we replaced the mode value from songs with a mode confidence below 0.25 by the mean mode value. We also replaced the key value from songs with a key confidence below 0.25 by the mean key value. 
+	For some songs, the mode confidence and/or key confidence is very low. In this case, we don't want our regressor to take mode and/or key into account for that song. That is why we replaced the mode value from songs with a mode confidence below 0.25 by the mean mode value. We replaced the key value from songs with a key confidence below 0.25 by the mean key value. 
 	
 	For performance evaluation, we used the R2 statistic, which is calculated as follows:
-	R2(y, r(X)) = cov(y, r(X))2var(y)  var(r(X))
-	Equation 3: the R2-value when comparing the observed value y to the predicted value r(X). 
 	
-	We splitted the data into a training set of 2000 songs and a test set of 1992 songs. Then we tried some regression methods: multiple linear regression and support vector machines with a linear, polynomial and radial kernel. Each time, we trained a regressor for valence and arousal separately. We report the resulting R2-values for the training and test set in Table 5.
-
-	Table 5: R2-values for regressors on training and test set
+	\begin{equation}
+	Valence_{audio, lyrics} =  Valence_{audio} + (1 - \alpha)Valence_{lyrics}
+	\label{eq:statistic}
+	\end{equation}
 	
-	We can conclude that the SVM regressor with a radial kernel gives us the best model. However, the results are not that good so to get a better fit, we probably need to take other audio features into account. In future work, we could do more experiments with also for example pitch features.
+	We split the data into a training set of 2000 songs and a test set of 1992 songs. Then we tried some regression methods: multiple linear regression and support vector machines with a linear, polynomial and radial kernel. Each time, we trained a regressor for valence and arousal separately. We report the resulting R$^{2}$-values for the training and test set in table \ref{tb:rv}.
 	
+	\begin{table}[]
+		\centering
+		\caption{R$^{2}$-values for regressors on training and test set}
+		\begin{tabular}{|c|p{1.5cm} p{1.5cm} p{1.5cm} p{1cm}|}
+			\hline
+			Regressor & Valence Train & Valence Test & Energy Train & Energy Test \\ \hline
+			MLR & 0.47 & 0.46 & 0.73 & 0.74 \\
+			SVM linear & 0.48 & 0.45 & 0.73 & 0.74 \\
+			SVM polynomial & 0.64 & 0.27 & 0.77 & 0.45 \\
+			SVM radial & 0.75 & 0.51 & 0.85 & 0.73 \\
+			\hline
+		\end{tabular}
+		\label{tb:rv}
+	\end{table}
+	
+	We can conclude that the SVM regressor with a radial kernel gives us the best model. However, the results are not that good so to get a better fit, we probably need to take other audio features into account. In future work, we could do more experiments with for example pitch features.
+		
 	\section{System description}	
 	
-	In this section we give a broad overview of our application as well as describe how our work can be reproduced. The description offered here is a user centric description, so we first start with the user interaction with the system. The user main interaction is with a text box. In this text box the user enters text about their current mood. 
-	
-	Sentiment analysis is done on the text inputted. As previously mentioned in our methods section, we use a dictionary approach to map each word entered to a valence and arousal value. These values are matches to the closest valence and arousal values present in the database. A song is then selected. Finally, youtube is searched by using the song title and artist name. This video is then played to the user.
-	
-	
-	Figure 4: System overview of MARS.
+In this, section we give a broad overview of our application as well as describe how our work can be reproduced. The description offered here is a user-centric description, so we first start with the user interaction with the system. The user main interaction is with a text box. In this text box, the user enters text about their current mood. 
+
+Sentiment analysis is done on the text we obtained. As previously mentioned in our methods section, we use a dictionary approach to map each word entered to a valence and arousal value. These values are matched to the closest valence and arousal values present in the database. A song is then selected. Finally, Youtube is searched by using the song title and artist name. This video is then played to the user.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.5\textwidth]{"schema"}
+	\caption{System overview of MARS.}
+\end{figure}	
 	
 	\section{System Performance}
-	Results; that is, system performance, from two perspectives	
+	In our experiments, we tested the system performance by asking university students to use the system and fill in a questionnaire (Please see appendix documents for questionnaire). We had 5 respondents. 
+	
+	We asked them how they felt before and after using the system, to get an indication of whether they liked it or not. In addition, we gave them five tasks: they had to write messages that were happy, sad, neutral, relaxed and angry. After each task, we asked them five questions. First, we asked whether they found it difficult to type the message, so we could validate if typing text is a convenient way for expressing emotions. Then we whether they liked the music, as this can have an effect on the user perception of the system performance. The next three questions were used to tweak parameters: we asked them whether they thought the mood of the music matched the mood of the text; whether they thought the music was too happy and whether they thought the music was too aroused. All these questions were asked using a 7-point Likert scale. Finally, there was a field for general remarks.
+	
+		\begin{table}[]
+			\centering
+			\caption{Final users comments. Please see appendix documents for the entire evaluation breakdown.}
+			\begin{tabular}{|c|p{6cm}|}
+				\hline
+				& Q3 \\ \hline
+				Person 1 & Nice system, I might use it :) \\
+				Person 2 & Works pretty well! \\
+				Person 3 & \\
+				Person 4 & Usability issues \\
+				Person 5 & The positive emotions work better than the negative \\
+				\hline
+			\end{tabular}
+			\label{tb:comments}
+		\end{table}
+		
+		Overall, the users of the system were impressed how the emotions described in the text were matched to a song. One user did indicate that there were some usability issues in regards to the interface of the website. Another indicated that sad emotions are not as well represented as happy.
 	
 	\section{Discussion}
 	
-	There are some limitations in our project. In this section we discuss them and suggest solutions that can potentially mitigate these issues. One of the main factors we omitted in our project is music preference. As suggested by Janssen et al [1]	music preference changes how the user is affected by music. The example given is that listeners familiar with high tempo music such as heavy metal may perceive Heavy Metal songs to be less arousing than someone not as familiar with the genre. Due to the scope and time we were unable to capture this dimension in our system. However, given the plethora availability of music services online, this task is not unfeasable. This issue could have been mitigated by requested user data from services such as Spotify. This way we could better determine what the listener listens to most often and their genre preferences. 
+	There are some limitations in our project. In this section, we discuss them and suggest solutions that can potentially mitigate these issues. One of the main factors we omitted in our project is music preference. As explained by Janssen et al \cite{Janssen}, music preference changes how the user is affected by music. The example given is that listeners familiar with high tempo music such as heavy metal may perceive Heavy Metal songs to be less arousing than someone not as familiar with the genre. Due to the scope and time, we were unable to capture this dimension in our system. However, given the plethora availability of music services online, this task is not unfeasible. This issue could have been mitigated by requesting user data from services such as Spotify. This way we could better determine what the listener listens to most often and their genre preferences. 
 	
-	An additional limitation with our approach is the data used, specifically, the valence-arousal values retrieved from Echo Nest. Little information is provided on how these values are produced. Nevertheless, there are reasons to believe that these values are not labels produced by humans but rather the result of a proprietary algorithm. Due to the time and scope of our project this is an issue that is difficult to mitigate. However, observation of samples of the dataset indicate that the values matches what a listener would expect. We also attempted to identify and reverse engineer the process using a  regressor model. Due to our limitations however it was not possible to achieve ground truth with the dataset provided. We strongly recommend further work to do this as it may improve results.
+	An additional limitation with our approach is the data used, specifically, the valence-arousal values retrieved from Echo Nest. Little information is provided on how these values are produced. Nevertheless, there are reasons to believe that these values are not labels produced by humans but rather the result of a proprietary algorithm. Due to the time and scope of our project this is an issue that is difficult to mitigate. However, observation of samples of the dataset indicate that the values match what a listener would expect. We attempted to identify and reverse engineer the process using a  regressor model. Due to our limitations, however, it was not possible to achieve ground truth with the dataset provided. We strongly recommend further work to do this as it may improve results.
+	
+	Furthermore, while the valence-arousal space can capture a wide range of emotions, it can produce results that lack accuracy. For example, mad or upset are closely mapped but ideally the music recommended for these two states should differ significantly. Intuition indicates that there are two main causes for this behavior; closely defined values in the database and ill-defined emotions. The former issue may be able to be improved by scaling, and a further selection of songs to ensure songs in the database are well spread. The latter issue is more complex, however. This may be a limitation of the valence-arousal model. However, as mentioned previously, other sentiment models do not provide the same flexibility, therefore valence and arousal models are still better for a broader range of sentiment analysis.
+	
 	
 
 
@@ -893,13 +992,6 @@ Initially, we will choose 0.5 as value for . In the experiments, we will also ex
 
 
 
-\section{Conclusion}
-The conclusion goes here.
-
-
-
-
-
 % if have a single appendix:
 %\appendix[Proof of the Zonklar Equations]
 % or
@@ -915,34 +1007,9 @@ The conclusion goes here.
 %
 
 
-\appendices
-\section{Proof of the First Zonklar Equation}
-Appendix one text goes here.
-
 % you can choose not to have a title for an appendix
 % if you want by leaving the argument blank
-\section{}
-Appendix two text goes here.
 
-
-% use section* for acknowledgment
-\ifCLASSOPTIONcompsoc
-  % The Computer Society usually uses the plural form
-  \section*{Acknowledgments}
-\else
-  % regular IEEE prefers the singular form
-  \section*{Acknowledgment}
-\fi
-
-
-The authors would like to thank...
-
-
-% Can use something like this to put references on a page
-% by themselves when using endfloat and the captionsoff option.
-\ifCLASSOPTIONcaptionsoff
-  \newpage
-\fi
 
 
 
@@ -968,11 +1035,37 @@ The authors would like to thank...
 % <OR> manually copy in the resultant .bbl file
 % set second argument of \begin to the number of references
 % (used to reserve space for the reference number labels box)
-\begin{thebibliography}{1}
+\begin{thebibliography}{30}
+  
+  \bibitem{Zwaag}van der Zwaag, Marjolein D., Joyce HDM Westerink, and Egon L. van den Broek, "Emotional and psychophysiological responses to tempo, mode, and percussiveness." Musicae Scientiae 15.2 (2011): 250-269.
+  
+  \bibitem{Janssen}Janssen, Joris H., Egon L. van den Broek, and Joyce HDM Westerink, "Tune in to your emotions: a robust personalized affective music player." User Modeling and User-Adapted Interaction 22.3 (2012): 255-279.
+  
+  \bibitem{Bailey}Bailey, Lucanne Magill, "The use of songs in music therapy with cancer patients and their families." Music Therapy 4.1 (1984): 5-17.
+  
+  \bibitem{Kim}Kim, Youngmoo E., et al., "Music emotion recognition: A state of the art review." Proc. ISMIR (2010).
+  
+  \bibitem{Sauro}Sauro, Jeff, and James R. Lewis., "Quantifying the user experience: Practical statistics for user research." Elsevier (2012).
 
-\bibitem{IEEEhowto:kopka}
-H.~Kopka and P.~W. Daly, \emph{A Guide to {\LaTeX}}, 3rd~ed.\hskip 1em plus
-  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
+  \bibitem{Hevner}K. Hevner, "Experimental studies of the elements of expression in music." American Journal of Psychology (1936): vol. 48, no. 2, pp. 246–267.
+     
+  \bibitem{Zentner}M. Zentner, D. Grandjean, and K. R. Scherer, "Emotions evoked by the sound of music: Characterization, classification, and measurement." Emotion (2008), vol. 8, p. 494.
+   
+  \bibitem{Hu} X. Hu, J. Downie, C. Laurier, M. Bay, and A. Ehmann, "The 2007 MIREX audio mood classification task: Lessons learned." in Proc. of the Intl. Conf. on Music Information Retrieval, Philadelphia, PA (2008).
+    
+  \bibitem{Watson}D. Watson and L. Clark, "PANAS-X: Manual for the Positive and Negative Affect Schedule, expanded form ed." University of Iowa (1994).
+  
+  \bibitem{Russel}Russell, James A., "A circumplex model of affect." Journal of personality and social psychology 39.6 (1980): 1161.
+  
+  \bibitem{Bradley}Bradley, M.M., Lang, P.J., "Affective norms for English words (ANEW): Instruction manual and affective ratings". Technical Report C-1, The Center for Research in Psychophysiology, University of Florida (1999).
+  
+  \bibitem{Warriner}Amy Beth Warriner, Victor Kuperman, Marc Brysbaert, "Norms of valence, arousal, and dominance for 13,915 English lemmas." Psychonomic Society, Inc. (2013)
+  
+  \bibitem{Thierry}Thierry Bertin-Mahieux, Daniel P.W. Ellis, Brian Whitman, and Paul Lamere, "The Million Song Dataset." In Proceedings of the 12th International Society for Music Information Retrieval Conference (ISMIR 2011)
+  
+  \bibitem{Yang}Yang, Yi-Hsuan, and Homer H. Chen. "Music emotion recognition." CRC Press, (2011): Chapter 10
+  
+
 
 \end{thebibliography}
 
@@ -987,22 +1080,6 @@ H.~Kopka and P.~W. Daly, \emph{A Guide to {\LaTeX}}, 3rd~ed.\hskip 1em plus
 %\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{mshell}}]{Michael Shell}
 % or if you just want to reserve a space for a photo:
 
-\begin{IEEEbiography}{Michael Shell}
-Biography text here.
-\end{IEEEbiography}
-
-% if you will not have a photo at all:
-\begin{IEEEbiographynophoto}{John Doe}
-Biography text here.
-\end{IEEEbiographynophoto}
-
-% insert where needed to balance the two columns on the last page with
-% biographies
-%\newpage
-
-\begin{IEEEbiographynophoto}{Jane Doe}
-Biography text here.
-\end{IEEEbiographynophoto}
 
 % You can push biographies down or up by placing
 % a \vfill before or after them. The appropriate
