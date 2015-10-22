@@ -230,24 +230,25 @@ class MessageController extends Controller {
           var vStd = rs.getDouble("VSTD")
           var aMean = rs.getDouble("AMean")
           var aStd = rs.getDouble("ASTD")
-          vStdSum += vStd
-          aStdSum += aStd
+          vStdSum += (1 / vStd)
+          aStdSum += (1 / aStd)
 
           //temporary
-          var v = vMean * (1.0/vStd)
-          var a = aMean * (1.0/aStd)
-          var VA = new VAVector(v, a)
-          // Logger.debug(VA.toString())
+          var v = vMean / vStd
+            var a = aMean / aStd
+            var VA = new VAVector(v, a)
 
-          //add the vector to the list of vectors
-          stringVAs = VA :: stringVAs
+            //add the vector to the list of vectors
+            stringVAs = VA :: stringVAs
         }
       }
     }
     if (count >= stringMinAmount){
-      stringVA.Average(stringVAs)
-      stringVA.v = stringVA.v * (vStdSum / count)
-      stringVA.a = stringVA.a * (aStdSum / count)
+      for(e <- stringVAs){
+        e.v = e.v / vStdSum
+        e.a = e.a / aStdSum
+      }
+      stringVA.Sum(stringVAs)
 
       Logger.debug("StringVA: " + stringVA.toString() + "\n")
       containsString = true
@@ -279,26 +280,24 @@ class MessageController extends Controller {
           aStd = 0.69793
         }
         count += 1
-        vStdSum += vStd
-        aStdSum += aStd
+        vStdSum += (1 / vStd)
+        aStdSum += (1 / aStd)
 
-        //temporary
-        var v = vMean * (1.0/vStd)
-        var a = aMean * (1.0/aStd)
+        var v = vMean / vStd
+        var a = aMean / aStd
         var VA = new VAVector(v, a)
-
-        Logger.debug("punct = " + punct)
-        Logger.debug(VA.toString())
 
         //add the vector to the list of vectors
         punctVAs = VA :: punctVAs
-      }
         
+      }
     }
     if (count >= punctMinAmount){
-      punctVA.Average(punctVAs)
-      punctVA.v = punctVA.v * (vStdSum / count)
-      punctVA.a = punctVA.a * (aStdSum / count)
+      for(e <- punctVAs){
+        e.v = e.v / vStdSum
+        e.a = e.a / aStdSum
+      }
+      punctVA.Sum(punctVAs)
 
       Logger.debug("punctVA: " + punctVA.toString() + "\n")
       containsPunct = true
@@ -323,12 +322,12 @@ class MessageController extends Controller {
             var vStd = rs.getDouble("VSTD")
             var aMean = rs.getDouble("AMean")
             var aStd = rs.getDouble("ASTD")
-            vStdSum += vStd
-            aStdSum += aStd
+            vStdSum += (1 / vStd)
+            aStdSum += (1 / aStd)
 
             //temporary
-            var v = vMean * (1.0/vStd)
-            var a = aMean * (1.0/aStd)
+            var v = vMean / vStd
+            var a = aMean / aStd
             var VA = new VAVector(v, a)
 
             //add the vector to the list of vectors
@@ -337,9 +336,11 @@ class MessageController extends Controller {
       }
     }
     if (count >= emojiMinAmount){
-      emojiVA.Average(emojiVAs)
-      emojiVA.v = emojiVA.v * (vStdSum / count)
-      emojiVA.a = emojiVA.a * (aStdSum / count)
+      for(e <- emojiVAs){
+        e.v = e.v / vStdSum
+        e.a = e.a / aStdSum
+      }
+      emojiVA.Sum(emojiVAs)
       
       Logger.debug("EmojiVA: " + emojiVA.toString() + "\n")
       containsEmoji = true
